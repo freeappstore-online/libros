@@ -1,0 +1,16 @@
+title = "Niebla"
+author = "Miguel de Unamuno"
+year = 1914
+genre = "Fiction"
+tags = ["nivola", "filosofía", "generación del 98"]
+language = "es"
+author_bio = "Escritor, filósofo y rector de la Universidad de Salamanca, figura central de la generación del 98."
+description = "Augusto Pérez, un joven rico y ocioso, se enamora y, desengañado, va a visitar a su propio autor, Miguel de Unamuno, para discutir su destino."
+excerpt = "Al aparecer Augusto a la puerta de su casa extendió el brazo derecho, con la mano palma abajo y abierta, y dirigiendo los ojos al cielo quedóse un momento parado en esta actitud estatuaria y augusta..."
+
+[look]
+gradient = "from-slate-900 to-zinc-950"
+accent = "#94A3B8"
+
+[source]
+gutenberg = 49836

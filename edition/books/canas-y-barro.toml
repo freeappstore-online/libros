@@ -1,0 +1,16 @@
+title = "Cañas y barro"
+author = "Vicente Blasco Ibáñez"
+year = 1902
+genre = "Fiction"
+tags = ["novela", "naturalismo", "valencia", "albufera"]
+language = "es"
+author_bio = "Novelista y político valenciano, uno de los escritores españoles más leídos en el mundo en su tiempo."
+description = "En los pueblos de la Albufera de Valencia, Tonet, nieto de un pescador e hijo de un labrador, prefiere una vida ociosa a la del trabajo."
+excerpt = "Como todas las tardes, la barca-correo anunció su llegada al Palmar con varios toques de bocina..."
+
+[look]
+gradient = "from-teal-900 to-green-950"
+accent = "#99F6E4"
+
+[source]
+gutenberg = 57781

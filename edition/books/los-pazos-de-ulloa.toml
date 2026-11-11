@@ -1,0 +1,19 @@
+title = "Los pazos de Ulloa"
+author = "Emilia Pardo Bazán"
+year = 1886
+genre = "Fiction"
+tags = ["novela", "naturalismo", "galicia"]
+language = "es"
+author_bio = "Escritora y crítica gallega, introductora del naturalismo en España y primera mujer catedrática de universidad del país."
+description = "Julián, un joven capellán, llega a una casa señorial gallega en ruinas, donde el marqués vive dominado por su mayordomo y por la hija de este."
+excerpt = "Por más que el jinete trataba de sofrenarlo agarrándose con todas sus fuerzas a la única rienda de cordel y susurrando palabritas calmantes y mansas, el peludo rocín seguía empeñándose en bajar la cuesta a un trote cochinero que descuadernaba los intestinos, cuando no a trancos desigualísimos de loco galope..."
+
+[look]
+gradient = "from-green-900 to-lime-950"
+accent = "#BEF264"
+
+[source]
+gutenberg = 18005
+
+[cover]
+none = "Gutenberg's cover is a generated placeholder"

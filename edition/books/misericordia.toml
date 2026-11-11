@@ -1,0 +1,19 @@
+title = "Misericordia"
+author = "Benito Pérez Galdós"
+year = 1897
+genre = "Fiction"
+tags = ["novela", "realismo", "madrid", "pobreza"]
+language = "es"
+author_bio = "El gran novelista del realismo español, autor de los Episodios nacionales y de un retrato inmenso del Madrid y la España de su siglo."
+description = "Benina, criada de una señora arruinada, pide limosna en secreto a la puerta de una iglesia madrileña para mantener a su ama."
+excerpt = "Dos caras, como algunas personas, tiene la parroquia de San Sebastián... mejor será decir la iglesia..."
+
+[look]
+gradient = "from-amber-900 to-orange-950"
+accent = "#FCD34D"
+
+[source]
+gutenberg = 21831
+
+[cover]
+none = "Gutenberg's cover is a generated placeholder"

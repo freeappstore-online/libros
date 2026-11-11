@@ -1,0 +1,16 @@
+title = "Don Álvaro o la fuerza del sino"
+author = "Duque de Rivas"
+year = 1835
+genre = "Drama"
+tags = ["teatro", "romanticismo", "tragedia"]
+language = "es"
+author_bio = "Ángel de Saavedra, duque de Rivas, poeta, dramaturgo y político, figura central del romanticismo español."
+description = "Don Álvaro, un indiano de origen misterioso, mata por accidente al padre de su amada Leonor y queda perseguido por un destino implacable: el gran drama romántico español."
+excerpt = "La escena es en Sevilla y sus alrededores. La escena representa la entrada del puente de Triana..."
+
+[look]
+gradient = "from-red-900 to-red-950"
+accent = "#FCA5A5"
+
+[source]
+gutenberg = 59492

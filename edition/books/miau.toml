@@ -1,0 +1,16 @@
+title = "Miau"
+author = "Benito Pérez Galdós"
+year = 1888
+genre = "Fiction"
+tags = ["novela", "realismo", "madrid", "sátira"]
+language = "es"
+author_bio = "El gran novelista del realismo español, autor de los Episodios nacionales y de un retrato inmenso del Madrid y la España de su siglo."
+description = "Ramón Villaamil, un funcionario cesante a dos meses de la jubilación, recorre los ministerios de Madrid pidiendo un empleo mientras su familia aparenta en sociedad."
+excerpt = "Á las cuatro de la tarde, la chiquillería de la escuela pública de la plazuela del Limón salió atropelladamente de clase, con algazara de mil demonios..."
+
+[look]
+gradient = "from-gray-900 to-slate-950"
+accent = "#D1D5DB"
+
+[source]
+gutenberg = 52392

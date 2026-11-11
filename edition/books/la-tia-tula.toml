@@ -1,0 +1,16 @@
+title = "La tía Tula"
+author = "Miguel de Unamuno"
+year = 1921
+genre = "Fiction"
+tags = ["novela", "maternidad", "generación del 98"]
+language = "es"
+author_bio = "Escritor, filósofo y rector de la Universidad de Salamanca, figura central de la generación del 98."
+description = "Gertrudis renuncia a casarse, pero cría a los hijos de su hermana y de su cuñado viudo: una novela sobre la maternidad y el deseo."
+excerpt = "Era a Rosa y no a su hermana Gertrudis, que siempre salía de casa con ella, a quien ceñían aquellas ansiosas miradas que les enderezaba Ramiro..."
+
+[look]
+gradient = "from-stone-900 to-zinc-950"
+accent = "#D6D3D1"
+
+[source]
+gutenberg = 44358

@@ -1,0 +1,19 @@
+title = "La gaviota"
+author = "Fernán Caballero"
+year = 1849
+genre = "Fiction"
+tags = ["novela", "andalucía", "costumbrismo"]
+language = "es"
+author_bio = "Seudónimo de Cecilia Böhl de Faber, escritora hispanoalemana que abrió el camino a la novela realista española."
+description = "Marisalada, una muchacha de un pueblo andaluz con una voz prodigiosa, se casa con un médico alemán y triunfa como cantante en Madrid, a costa de todo lo demás."
+excerpt = "En una mañana de octubre de 1838, un hombre bajaba a pie de uno de los pueblos del condado de Niebla, y se dirigía hacia la playa..."
+
+[look]
+gradient = "from-sky-900 to-blue-950"
+accent = "#7DD3FC"
+
+[source]
+gutenberg = 23600
+
+[cover]
+none = "Gutenberg's cover is a generated placeholder"

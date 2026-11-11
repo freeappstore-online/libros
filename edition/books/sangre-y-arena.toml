@@ -1,0 +1,19 @@
+title = "Sangre y arena"
+author = "Vicente Blasco Ibáñez"
+year = 1908
+genre = "Fiction"
+tags = ["novela", "toros", "sevilla"]
+language = "es"
+author_bio = "Novelista y político valenciano, uno de los escritores españoles más leídos en el mundo en su tiempo."
+description = "Juan Gallardo, de origen humilde, llega a ser un torero famoso, dividido entre su esposa y una aristócrata, entre la gloria y el miedo."
+excerpt = "Como en todos los días de corrida, Juan Gallardo almorzó temprano. Un pedazo de carne asada fue su único plato. Vino, ni probarlo: la botella permaneció intacta ante él. Había que conservarse sereno..."
+
+[look]
+gradient = "from-red-900 to-amber-950"
+accent = "#F59E0B"
+
+[source]
+gutenberg = 26983
+
+[cover]
+none = "Gutenberg's cover is a generated placeholder"

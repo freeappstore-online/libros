@@ -1,0 +1,16 @@
+title = "Tristana"
+author = "Benito Pérez Galdós"
+year = 1892
+genre = "Fiction"
+tags = ["novela", "realismo", "madrid"]
+language = "es"
+author_bio = "El gran novelista del realismo español, autor de los Episodios nacionales y de un retrato inmenso del Madrid y la España de su siglo."
+description = "Tristana, una joven huérfana bajo la tutela del viejo don Lope, sueña con ser libre e independiente y se enamora de un pintor."
+excerpt = "En el populoso barrio de Chamberí, más cerca del Depósito de Aguas que de Cuatro Caminos, vivía, no ha muchos años, un hidalgo de buena estampa y nombre peregrino; no aposentado en casa solariega, pues por allí no las hubo nunca, sino en plebeyo cuarto de alquiler, de los baratitos, con ruidoso vecindario de taberna, merendero, cabrería, y estrecho patio interior de habitaciones numeradas..."
+
+[look]
+gradient = "from-purple-900 to-fuchsia-950"
+accent = "#E879F9"
+
+[source]
+gutenberg = 66979

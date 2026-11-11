@@ -1,0 +1,19 @@
+title = "La Regenta"
+author = "Leopoldo Alas, «Clarín»"
+year = 1884
+genre = "Fiction"
+tags = ["novela", "realismo", "provincia"]
+language = "es"
+author_bio = "Leopoldo Alas, catedrático de Derecho y crítico temido, firmaba como Clarín; La Regenta es su obra maestra."
+description = "Ana Ozores, casada con el viejo regente de la Audiencia de Vetusta, se debate entre su confesor, el ambicioso Magistral, y el seductor Álvaro Mesía."
+excerpt = "La heroica ciudad dormía la siesta. El viento Sur, caliente y perezoso, empujaba las nubes blanquecinas que se rasgaban al correr hacia el Norte..."
+
+[look]
+gradient = "from-rose-900 to-red-950"
+accent = "#FDA4AF"
+
+[source]
+gutenberg = 17073
+
+[cover]
+none = "Gutenberg's cover is a generated placeholder"

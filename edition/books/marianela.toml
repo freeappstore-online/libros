@@ -1,0 +1,17 @@
+title = "Marianela"
+author = "Benito Pérez Galdós"
+year = 1878
+genre = "Fiction"
+tags = ["novela", "realismo", "amor"]
+language = "es"
+author_bio = "El gran novelista del realismo español, autor de los Episodios nacionales y de un retrato inmenso del Madrid y la España de su siglo."
+description = "Nela, una muchacha huérfana y poco agraciada, es los ojos de Pablo, un joven ciego que la cree hermosa, hasta que un médico promete devolverle la vista."
+excerpt = "Se puso el sol. Tras el breve crepúsculo vino tranquila y oscura la noche, en cuyo negro seno murieron poco a poco los últimos rumores de la tierra soñolienta..."
+
+[look]
+gradient = "from-teal-900 to-emerald-950"
+accent = "#6EE7B7"
+
+[source]
+gutenberg = 17340
+sub = true

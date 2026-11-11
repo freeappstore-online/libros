@@ -1,0 +1,32 @@
+title = "Rimas y leyendas"
+author = "Gustavo Adolfo Bécquer"
+year = 1871
+genre = "Fiction"
+tags = ["leyendas", "poesía", "romanticismo", "misterio"]
+language = "es"
+author_bio = "Poeta y narrador sevillano, el gran autor del romanticismo tardío español; murió a los treinta y cuatro años."
+description = "Las leyendas fantásticas de Bécquer, como «Los ojos verdes» o «El monte de las ánimas», sus cartas Desde mi celda y las Rimas, los poemas de amor más leídos en español."
+excerpt = "Por los tenebrosos rincones de mi cerebro, acurrucados y desnudos, duermen los extravagantes hijos de mi fantasía, esperando en silencio que el arte los vista de la palabra para poderse presentar decentes en la escena del mundo..."
+
+[look]
+gradient = "from-violet-900 to-purple-950"
+accent = "#C4B5FD"
+
+[source]  # starts after the Álvarez Quintero brothers' preface (†1938, †1944: in copyright)
+toc = true
+
+[source.titles]
+'^Carta' = 'Desde mi celda, carta'
+
+[[source.volumes]]
+gutenberg = 53552
+start = 'INTRODUCCIÓN'
+end = 'CARTA NOVENA'
+end_n = 0
+
+[[source.volumes]]  # the Rimas are numbered poems, each its own chapter (a short one joins the one before)
+gutenberg = 53552
+start = 'CARTA NOVENA'
+label = "Rima"
+level = 2
+nosub = true

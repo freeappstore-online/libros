@@ -1,0 +1,19 @@
+title = "Trafalgar"
+author = "Benito Pérez Galdós"
+year = 1873
+genre = "Fiction"
+tags = ["novela histórica", "episodios nacionales", "guerra", "mar"]
+language = "es"
+author_bio = "El gran novelista del realismo español, autor de los Episodios nacionales y de un retrato inmenso del Madrid y la España de su siglo."
+description = "Gabriel Araceli, ya anciano, recuerda cómo vivió de muchacho la batalla de Trafalgar a bordo del Santísima Trinidad: el primero de los Episodios nacionales."
+excerpt = "Se me permitirá que antes de referir el gran suceso de que fui testigo, diga algunas palabras sobre mi infancia, explicando por qué extraña manera me llevaron los azares de la vida a presenciar la terrible catástrofe de nuestra marina..."
+
+[look]
+gradient = "from-blue-900 to-indigo-950"
+accent = "#93C5FD"
+
+[source]
+gutenberg = 16961
+
+[cover]
+none = "Gutenberg's cover is a generated placeholder"

@@ -1,0 +1,16 @@
+title = "El sí de las niñas"
+author = "Leandro Fernández de Moratín"
+year = 1806
+genre = "Drama"
+tags = ["comedia", "ilustración", "teatro"]
+language = "es"
+author_bio = "Dramaturgo y poeta ilustrado, renovador de la comedia española según el modelo neoclásico."
+description = "Doña Francisca, de dieciséis años, va a ser casada por su madre con don Diego, de cincuenta y nueve: una comedia contra los matrimonios concertados y la educación que enseña a mentir."
+excerpt = "D. DIE. ¿No han venido todavía? SIMON. No Señor. D. DIE. Despacio la han tomado por cierto..."
+
+[look]
+gradient = "from-pink-900 to-rose-950"
+accent = "#F9A8D4"
+
+[source]
+gutenberg = 50027

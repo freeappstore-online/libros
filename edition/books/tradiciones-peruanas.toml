@@ -1,0 +1,26 @@
+title = "Tradiciones peruanas"
+author = "Ricardo Palma"
+year = 1872
+genre = "Fiction"
+tags = ["relatos", "historia", "perú", "humor"]
+language = "es"
+author_bio = "Escritor peruano, director de la Biblioteca Nacional de Lima, creador del género de la tradición."
+description = "Relatos breves, entre la historia y la leyenda, sobre la Lima de virreyes, frailes y pícaros, contados con humor y picardía."
+excerpt = "Esta tradición no tiene otra fuente de autoridad que el relato del pueblo. Todos la conocen en el Cuzco tal como hoy la presento..."
+
+[look]
+gradient = "from-red-900 to-orange-950"
+accent = "#FB923C"
+
+[source]
+gutenberg = 21282
+toc = true
+
+[source.titles]  # headings printed without their accents
+'Excomunion' = 'Excomunión'
+'Rejon' = 'Rejón'
+'^Conversion' = 'Conversión'
+'Historicas' = 'Históricas'
+
+[cover]
+none = "Gutenberg's cover is a generated placeholder"

@@ -1,0 +1,26 @@
+title = "Pepita Jiménez"
+author = "Juan Valera"
+year = 1874
+genre = "Fiction"
+tags = ["novela", "epistolar", "amor", "andalucía"]
+language = "es"
+author_bio = "Novelista, crítico y diplomático cordobés, uno de los prosistas más elegantes del siglo XIX."
+description = "Luis de Vargas, un seminarista a punto de ordenarse, escribe a su tío cartas cada vez más turbadas sobre Pepita Jiménez, la joven viuda con quien su padre quiere casarse."
+excerpt = "Querido tío y venerado maestro: Hace cuatro días que llegué con toda felicidad a este lugar de mi nacimiento, donde he hallado bien de salud a mi padre, al señor vicario y a los amigos y parientes..."
+
+[look]
+gradient = "from-rose-900 to-pink-950"
+accent = "#FB7185"
+
+[source]
+gutenberg = 17223
+start = 'El señor deán de la catedral de\.\.\., muerto pocos años ha, dejó entre sus'
+first = "Preámbulo"
+heads = ['(?P<rest>\d+ de [A-Z]\w+)\.', 'Paralipómenos']
+strip = '-I+-|Cartas de mi sobrino'
+
+[source.titles]
+'^(\d+ de \w+)$' = 'Carta del \1'
+
+[cover]
+none = "Gutenberg's cover is a generated placeholder"

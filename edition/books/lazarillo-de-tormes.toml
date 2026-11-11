@@ -1,0 +1,20 @@
+title = "Lazarillo de Tormes"
+author = "Anónimo"
+year = 1554
+genre = "Fiction"
+tags = ["novela picaresca", "humor", "siglo de oro", "clásico"]
+language = "es"
+author_bio = "Autor desconocido del siglo XVI; la obra se ha atribuido, sin pruebas concluyentes, a Diego Hurtado de Mendoza, a Alfonso de Valdés y a otros."
+description = "Lázaro cuenta en primera persona cómo sobrevivió sirviendo a un ciego, a un clérigo avaro, a un escudero hambriento y a otros amos: la obra que fundó la novela picaresca."
+excerpt = "Pues sepa V.M. ante todas cosas que a mí llaman Lázaro de Tormes, hijo de Tomé González y de Antona Pérez, naturales de Tejares, aldea de Salamanca..."
+
+[look]
+gradient = "from-stone-900 to-neutral-950"
+accent = "#D6D3D1"
+
+[source]
+gutenberg = 320
+sub = true
+
+[cover]
+none = "Gutenberg's cover is a generated placeholder"
