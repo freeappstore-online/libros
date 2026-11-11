@@ -129,6 +129,8 @@ class Spanish(unittest.TestCase):
 
     def test_spanish_markup_and_front_matter_words(self):
         self.assertEqual(fetch.clean_inline("Texto [Ilustración: Retrato] y más.", ES), "Texto  y más.")
+        self.assertEqual(fetch.clean_inline("seguro servidor,\n\n=Dios=.\n", ES), "seguro servidor,\n\nDios.\n")
+        self.assertEqual(fetch.clean_inline("a = b = c", ES), "a = b = c")
         self.assertTrue(re.fullmatch(ES.EDITORIAL, "Nota de Transcripción"))
         self.assertTrue(re.fullmatch(ES.CONTENTS, "ÍNDICE"))
 

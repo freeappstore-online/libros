@@ -8,7 +8,7 @@ paragraph and verse logic, the lock) and take these from the profile:
 - headings: GENERIC (level, regex) patterns, KIND, MAJOR, SPECIAL, number_word(), the default
   LABEL of a bare numeral, PART for a text split without headings, LAST ("Chapter the Last");
 - title case: SMALL words, NOT_ROMAN capitals, OPENERS before a capital;
-- front and back matter: EDITORIAL, BACK_MATTER, CONTENTS, BYLINE, MARKUP;
+- front and back matter: EDITORIAL, BACK_MATTER, CONTENTS, BYLINE, MARKUP, BOLD_MARKUP;
 - sentences: END and ABBREVIATION;
 - spoken titles: SPOKEN_KIND and spoken_number().
 """

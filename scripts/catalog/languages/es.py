@@ -39,6 +39,7 @@ VERSE_LOWER = 1.01
 CONTENTS = r"(?i:[íi]ndice(?: general)?|tabla de materias|contenido)[.:]?"
 BYLINE = r"(?:[Pp]or|POR) [A-ZÁÉÍÓÚÑ][\w.’'-]*(?:\s(?:[A-ZÁÉÍÓÚÑ][\w.’'-]*|de|del|y|DE|DEL|Y)){0,5}"
 MARKUP = r"\[(?:Ilustraci[óo]n|[Ii]magen|Nota)[^\]]*\]"
+BOLD_MARKUP = True  # Gutenberg's =bold= becomes plain text (Miau's "=Dios=", libros books#59)
 
 
 def _plain(t: str) -> str:

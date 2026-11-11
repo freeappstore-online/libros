@@ -150,6 +150,8 @@ def clean_inline(text: str, lang) -> str:
     """Markup removal on the raw text (bepub's cleanContent rules, plus footnote markers)."""
     if lang.MARKUP:
         text = re.sub(lang.MARKUP, "", text)
+    if lang.BOLD_MARKUP:
+        text = re.sub(r"(?<![=\w])=([^=\s][^=\n]{0,38}[^=\s]|[^=\s])=(?![=\w])", r"\1", text)
     text = re.sub(r"\[_?Copyright[^\]]*\]", "", text)
     text = re.sub(r"\[Illustration[^\]]*\]", "", text, flags=re.S)
     text = re.sub(r"\[(?:Footnote|Sidenote|Transcriber|Note)[^\]]*\]", "", text, flags=re.S | re.I)

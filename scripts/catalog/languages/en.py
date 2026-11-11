@@ -31,6 +31,8 @@ VERSE_LOWER = 0.2
 CONTENTS = r"(?:TABLE OF )?CONTENTS?[.:]?|Contents[.:]?"  # a contents list's heading
 BYLINE = r"[Bb]y (?:[A-Z][\w.’'-]*\s?){1,5}"
 MARKUP = None  # editorial markup in this language's transcriptions, beyond the generic [Illustration] etc.
+# Gutenberg's =bold= kept as is: the English texts have two, a sign and a line set in bold (fetch --check)
+BOLD_MARKUP = False
 
 WORDS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten",
          "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen",
