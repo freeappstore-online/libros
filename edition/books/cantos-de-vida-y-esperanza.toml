@@ -1,0 +1,20 @@
+title = "Cantos de vida y esperanza"
+author = "Rubén Darío"
+year = 1905
+genre = "Poetry"
+tags = ["modernismo", "poesía"]
+language = "es"
+author_bio = "Poeta nicaragüense, fundador del modernismo y renovador de la poesía en lengua española."
+description = "La madurez de Darío: poemas sobre el destino, la hispanidad y la muerte, como «Lo fatal» y «Salutación del optimista»."
+excerpt = ""  # TODO: the opening, once the split starts there
+
+[look]
+gradient = "from-indigo-900 to-blue-950"
+accent = "#818CF8"
+
+[source]
+gutenberg = 50341
+
+[source.titles]
+'^Capítulo \d+: ' = ''
+'^Capítulo 1$' = 'Cantos de vida y esperanza'

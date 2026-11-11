@@ -1,0 +1,20 @@
+title = "Sab"
+author = "Gertrudis Gómez de Avellaneda"
+year = 1841
+genre = "Fiction"
+tags = ["novela", "romanticismo", "cuba", "esclavitud"]
+language = "es"
+author_bio = "Poeta, dramaturga y novelista cubana, una de las grandes voces del romanticismo en español."
+description = "Sab, un esclavo mulato de una plantación cubana, ama en secreto a Carlota, la hija de su amo: una de las primeras novelas antiesclavistas."
+excerpt = ""  # TODO: the opening, once the split starts there
+
+[look]
+gradient = "from-emerald-900 to-teal-950"
+accent = "#2DD4BF"
+
+[source]
+gutenberg = 75126
+
+[source.titles]
+'Capitulo' = 'Capítulo'
+'^Conclusion$' = 'Conclusión'

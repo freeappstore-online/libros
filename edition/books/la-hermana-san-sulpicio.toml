@@ -1,0 +1,20 @@
+title = "La hermana San Sulpicio"
+author = "Armando Palacio Valdés"
+year = 1889
+genre = "Fiction"
+tags = ["novela", "humor", "andalucía", "amor"]
+language = "es"
+author_bio = "Novelista asturiano del realismo, autor de La aldea perdida y Marta y María."
+description = "Un poeta gallego se enamora en un balneario de una joven monja andaluza, la hermana San Sulpicio, que todavía no ha profesado."
+excerpt = "Quiero contar la historia puntual de un episodio de mi vida que no deja de ofrecer algún interés; aunque mi impericia en el arte de escribir quizá llegue a quitárselo..."
+
+[look]
+gradient = "from-sky-900 to-cyan-950"
+accent = "#BAE6FD"
+
+[source]
+gutenberg = 31013
+sub = true
+
+[cover]
+none = "Gutenberg's cover is a generated placeholder"

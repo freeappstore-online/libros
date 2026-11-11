@@ -1,0 +1,22 @@
+title = "Historia de la vida del Buscón"
+author = "Francisco de Quevedo"
+year = 1626
+genre = "Fiction"
+tags = ["novela picaresca", "sátira", "siglo de oro"]
+language = "es"
+author_bio = "Poeta, novelista y satírico del Siglo de Oro, maestro del conceptismo y rival literario de Góngora."
+description = "Pablos, hijo de un barbero ladrón y de una hechicera, intenta medrar a fuerza de engaños: la novela picaresca más feroz y verbalmente brillante del Siglo de Oro."
+excerpt = "Yo, señora, soy de Segovia. Mi padre se llamó Clemente Pablo, natural del mismo pueblo; Dios le tenga en el cielo..."
+
+[look]
+gradient = "from-yellow-900 to-amber-950"
+accent = "#FACC15"
+
+[source]
+gutenberg = 32315
+
+[source.titles]
+'^Libro (\d): Capítulo ' = 'Libro \1, capítulo '
+
+[cover]
+none = "Gutenberg's cover is a generated placeholder"
