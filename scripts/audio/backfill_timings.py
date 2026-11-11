@@ -39,7 +39,7 @@ def pauses(path: str) -> tuple[np.ndarray, float, float]:
 
 def align(content: str, gaps: np.ndarray, start: float, end: float) -> list:
     """Segments for the sentences of content, cutting the speech at the best-fitting pauses."""
-    spans = sentences(content)
+    spans = sentences(content, "en")  # English audio only; other editions narrate with timings (books#57)
     chars = np.cumsum([e - s for s, e, _ in spans], dtype=float)
     expected = start + (end - start) * chars[:-1] / chars[-1]  # each boundary between sentences
     mid, length = gaps.mean(axis=1), gaps[:, 1] - gaps[:, 0]

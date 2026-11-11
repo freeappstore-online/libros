@@ -81,3 +81,39 @@ lines all start with a capital used to count as verse. Prose that happened to wr
 ("replied the / Scarecrow;") then kept its line breaks in 175 books, including Oz (books#33 fixed
 two of those by hand). A block whose lines fill the wrap width and break mid-phrase is now prose,
 unless the book sets `verse` (Poe's poems, *Cane*), whose long rhymed lines look the same.
+
+## Language profiles
+
+Everything in `fetch.py` and `scripts/audio/segments.py` that depends on the language of a text
+lives in a language profile, `scripts/catalog/languages/<lang>.py` (books#56). A book's `language`
+picks it (`es`, and `en-GB` would take `en`). The engine keeps what doesn't depend on the language:
+the Gutenberg markers, paragraphs and verse, front matter, the lock.
+
+| A profile holds | Used for |
+|---|---|
+| `GENERIC`, `KIND`, `MAJOR`, `SPECIAL`, `ARTICLE`, `LAST`, `number_word()` | headings: the words that mark one ("CAPÍTULO", "JORNADA"), their number words in every form a heading uses ("PRIMERA PARTE", "décimo tercero"), named headings (Prólogo) |
+| `LABEL`, `PART` | a bare numeral's name ("Capítulo 12"), and the parts of a text without headings |
+| `SMALL`, `NOT_ROMAN`, `OPENERS` | title case of ALL-CAPS headings |
+| `EDITORIAL`, `BACK_MATTER`, `CONTENTS`, `BYLINE`, `MARKUP` | sections dropped by default (an editor's preface), where the back matter starts ("FIN", "ÍNDICE"), a contents list, a byline, editorial markup (`[Ilustración]`) |
+| `WRAPPED_TITLES`, `VERSE_LOWER` | joining a heading's title wrapped onto the next lines; whether short lines starting in lowercase are verse |
+| `END`, `ABBREVIATION` | where a narrated sentence ends: closing quotes (», ”), dialogue tags after a dash (`—¿Venta es ésta? —replicó`), abbreviations (Sr., Dña., Vd.) |
+| `SPOKEN_KIND`, `spoken_number()` | how a chapter's title clip says its number ("Capítulo doce", "Tratado segundo") |
+
+To add a language:
+
+1. Copy `es.py` (or `en.py`) to `<lang>.py` and translate each item, from the Gutenberg texts the
+   edition will use: look at how their chapters, parts, acts and front matter are marked before
+   writing a pattern. Read the comments of `en.py` for what each item does.
+2. Add unit tests next to the Spanish ones (`Spanish` in `scripts/catalog/test_catalog.py` and
+   `scripts/audio/test_audio.py`): heading lines and their titles, number words, verse, sentences and
+   spoken titles.
+3. Build the language's books in a temporary edition outside this repository (config.json with the
+   language, one book file each) and check every book by hand as [adding-books.md](adding-books.md)
+   says: the chapter list, the first and last lines, no Gutenberg, editor or transcriber text.
+   Change the profile for what most books share, and use a book's split options for what only it has.
+   ```bash
+   BOOKS_EDITION=/tmp/es-edition python3 scripts/catalog/fetch.py ~/.cache/books-gutenberg
+   ```
+4. Run `--check` over the English catalogue. A profile only changes books in its language, but a
+   change to the engine to support it changes every book: keep English byte-identical (`en.py`
+   switches a new behaviour off, as `WRAPPED_TITLES` does, when it would re-split English books).

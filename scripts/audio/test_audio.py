@@ -187,12 +187,12 @@ class Titles(unittest.TestCase):
             "": "",
         }
         for title, spoken in cases.items():
-            self.assertEqual(spoken_title(title), spoken)
+            self.assertEqual(spoken_title(title, "en"), spoken)
 
     def test_every_catalogue_title_is_spoken(self):
         for name in sorted(os.listdir(CATALOG)):
             for ch in json.load(open(os.path.join(CATALOG, name)))["chapters"]:
-                spoken = spoken_title(ch["title"])
+                spoken = spoken_title(ch["title"], "en")
                 with self.subTest(book=name, title=ch["title"]):
                     self.assertEqual(bool(spoken), bool(ch["title"].strip()))
                     self.assertNotRegex(spoken, r"\b(?:Chapter|Book|Part|Act|Scene|Canto) (?:\d+|[IVXLC]+)\b")
@@ -205,7 +205,7 @@ class Segments(unittest.TestCase):
                 content = ch["content"]
                 if not content.strip():
                     continue
-                spans = sentences(content)
+                spans = sentences(content, "en")
                 with self.subTest(book=name, chapter=i):
                     self.assertTrue(spans)
                     self.assertTrue(all(s < e for s, e, _ in spans))
@@ -215,14 +215,43 @@ class Segments(unittest.TestCase):
 
     def test_dialogue_stays_one_sentence(self):
         text = "“Oh dear!” said the Rabbit. Mr. Smith left.\n\nNext."
-        self.assertEqual([text[s:e] for s, e, _ in sentences(text)],
+        self.assertEqual([text[s:e] for s, e, _ in sentences(text, "en")],
                          ["“Oh dear!” said the Rabbit.", "Mr. Smith left.", "Next."])
 
     def test_an_initial_does_not_end_a_sentence_but_i_does(self):
         # The Wizard of Oz introduction's signature was narrated as "L." + pause + "Frank Baum" (books#33)
         text = "Left out.\n\nL. Frank Baum\nChicago, April, 1900.\n\nIt was I. Then N.B. Go."
-        self.assertEqual([text[s:e] for s, e, _ in sentences(text)],
+        self.assertEqual([text[s:e] for s, e, _ in sentences(text, "en")],
                          ["Left out.", "L. Frank Baum\nChicago, April, 1900.", "It was I.", "Then N.B. Go."])
+
+
+
+class Spanish(unittest.TestCase):
+    """The Spanish profile (books#56): its sentences and spoken titles."""
+
+    def test_spoken_titles(self):
+        cases = {
+            "Capítulo 12: Que trata de la aventura": "Capítulo doce. Que trata de la aventura.",
+            "Tratado 2: Cómo Lázaro se asentó con un clérigo": "Tratado segundo. Cómo Lázaro se asentó con un clérigo.",
+            "Parte 1, Capítulo 3": "Parte primera, Capítulo tercero.",
+            "Jornada 3": "Jornada tercera.",
+            "XII": "Capítulo doce.",
+            "Rima 76": "Rima setenta y seis.",
+            "Parte 2, Capítulo 74": "Parte segunda, Capítulo setenta y cuatro.",
+            "Capítulo 365": "Capítulo trescientos sesenta y cinco.",
+            "Capítulo último": "Capítulo último.",
+            "Los Duendes del Cuzco": "Los Duendes del Cuzco.",
+        }
+        for title, spoken in cases.items():
+            self.assertEqual(spoken_title(title, "es"), spoken)
+
+    def test_sentences(self):
+        text = ("—¿Venta es ésta? —replicó don Quijote. Sr. D. Pedro llegó con Vd. y la Sra. Dña. Inés. "
+                "¡Ay! ¿Quién es?\n\n--Cállate, mala lengua. --Iré --dijo él. «Tengo que hablar contigo». Luego.")
+        self.assertEqual([text[s:e] for s, e, _ in sentences(text, "es")],
+                         ["—¿Venta es ésta? —replicó don Quijote.", "Sr. D. Pedro llegó con Vd. y la Sra. Dña. Inés.",
+                          "¡Ay!", "¿Quién es?", "--Cállate, mala lengua.", "--Iré --dijo él.",
+                          "«Tengo que hablar contigo».", "Luego."])
 
 
 if __name__ == "__main__":

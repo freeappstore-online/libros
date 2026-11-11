@@ -32,7 +32,7 @@ for slug in sorted(set(only)):
     for i, ch in enumerate(json.load(open(os.path.join(catalog, f"{slug}.json")))["chapters"]):
         audio = f"{audio_prefix(catalog, voice, slug)}/{i}"
         if titles:
-            chars = len(spoken_title(ch["title"])) + TITLE_COST
+            chars = len(spoken_title(ch["title"], "en")) + TITLE_COST  # the edition's language: books#57
             if chars == TITLE_COST or f"{audio}.m4a" not in files or (f"{audio}.title.m4a" in files and not force):
                 continue
         else:

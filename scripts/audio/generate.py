@@ -40,7 +40,7 @@ def narrate(kokoro, content: str, voice: str, lang: str) -> tuple[np.ndarray, in
     """The chapter's audio, its sample rate, and when each sentence is spoken."""
     u16 = utf16(content)
     parts, segments, length, sr = [], [], 0, 24_000
-    for start, end, ends_paragraph in sentences(content):
+    for start, end, ends_paragraph in sentences(content, lang):
         try:
             samples, sr = kokoro.create(content[start:end], voice=voice, speed=1.0, lang=lang)
         except ValueError as err:  # nothing to say, e.g. "* * *"
@@ -142,7 +142,7 @@ if __name__ == "__main__":
             os.remove(f"{dest}/{i}.wav")
             json.dump({"v": 1, "segments": segments}, open(f"{dest}/{i}.timings.json", "w"), separators=(",", ":"))
             print(f"{unit}: {len(samples) / sr / 60:.1f} min audio in {(time.time() - t) / 60:.1f} min", flush=True)
-        title = spoken_title(chapter["title"])
+        title = spoken_title(chapter["title"], lang)
         if title:
             samples, sr = kokoro.create(title, voice=voice, speed=1.0, lang=lang)
             samples = trim(samples, sr)

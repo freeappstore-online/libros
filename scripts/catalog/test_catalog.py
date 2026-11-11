@@ -15,20 +15,23 @@ import qa  # noqa: E402
 import standardebooks  # noqa: E402
 from covers import COVERS_JSON, OUT_DIR as COVERS_DIR  # noqa: E402
 from fetch import BOOKS, differences, is_verse, number, read_time, split_book, titlecase  # noqa: E402
+from languages import profile  # noqa: E402
+
+EN, ES = profile("en"), profile("es")
 
 
 class Helpers(unittest.TestCase):
     def test_number(self):
         for tok, n in [("XIV", 14), ("14", 14), ("fourteen", 14), ("Fourteenth", 14), ("twenty-one", 21),
                        ("Thirtieth", 30), ("IV.", 4)]:
-            self.assertEqual(number(tok), n, tok)
-        self.assertIsNone(number("Cat"))
+            self.assertEqual(number(tok, EN), n, tok)
+        self.assertIsNone(number("Cat", EN))
 
     def test_titlecase(self):
-        self.assertEqual(titlecase("THE BOY WHO LIVED"), "The Boy Who Lived")
-        self.assertEqual(titlecase("A TALE OF TWO CITIES"), "A Tale of Two Cities")
-        self.assertEqual(titlecase("CHAPTER XIV"), "Chapter XIV")
-        self.assertEqual(titlecase("Already Mixed case"), "Already Mixed case")
+        self.assertEqual(titlecase("THE BOY WHO LIVED", EN), "The Boy Who Lived")
+        self.assertEqual(titlecase("A TALE OF TWO CITIES", EN), "A Tale of Two Cities")
+        self.assertEqual(titlecase("CHAPTER XIV", EN), "Chapter XIV")
+        self.assertEqual(titlecase("Already Mixed case", EN), "Already Mixed case")
 
     def test_read_time(self):
         self.assertEqual(read_time(100), "15min")
@@ -50,17 +53,17 @@ class Verse(unittest.TestCase):
     SHORT = ["How doth the little crocodile", "Improve his shining tail,", "And pour the waters of the Nile"]
 
     def test_prose_wrapped_at_capitals_is_prose(self):
-        self.assertFalse(is_verse(self.SPEECH))
+        self.assertFalse(is_verse(self.SPEECH, EN))
 
     def test_long_rhymed_lines_are_verse_in_a_verse_book(self):
-        self.assertFalse(is_verse(self.RAVEN))
-        self.assertTrue(is_verse(self.RAVEN, verse=True))
+        self.assertFalse(is_verse(self.RAVEN, EN))
+        self.assertTrue(is_verse(self.RAVEN, EN, verse=True))
 
     def test_lines_past_the_wrap_width_are_verse(self):
-        self.assertTrue(is_verse(self.WHITMAN))
+        self.assertTrue(is_verse(self.WHITMAN, EN))
 
     def test_short_capitalised_lines_are_verse(self):
-        self.assertTrue(is_verse(self.SHORT))
+        self.assertTrue(is_verse(self.SHORT, EN))
 
 
 class Split(unittest.TestCase):
@@ -71,7 +74,7 @@ class Split(unittest.TestCase):
             f"CHAPTER I. THE STORM\n\n{PROSE}\n{PROSE}\nCHAPTER II. THE CALM\n\n{PROSE}\n{PROSE}")
 
     def test_chapters_from_headings_without_front_matter(self):
-        chapters = split_book(self.BOOK, {})
+        chapters = split_book(self.BOOK, {}, EN)
         self.assertEqual([c["title"] for c in chapters], ["Chapter 1: The Storm", "Chapter 2: The Calm"])
         self.assertTrue(chapters[0]["content"].startswith("It was a dark and stormy night;"))
         self.assertNotIn("\n", chapters[0]["content"].split("\n\n")[0])  # prose is unwrapped
@@ -83,24 +86,71 @@ class Split(unittest.TestCase):
         self.assertIn("title", differences([{"title": "Two", "content": "abc"}], a)[0])
 
 
+class Spanish(unittest.TestCase):
+    """The Spanish profile (books#56), on heading shapes from docs/languages/es.md's Gutenberg texts."""
+    PROSA = ("En un lugar de la Mancha, de cuyo nombre no quiero acordarme, no ha mucho tiempo que vivía\n"
+             "un hidalgo de los de lanza en astillero, adarga antigua, rocín flaco y galgo corredor. Una\n"
+             "olla de algo más vaca que carnero, salpicón las más noches, duelos y quebrantos los sábados.\n")
+
+    def test_number_words(self):
+        for tok, n in [("PRIMERO", 1), ("Primera", 1), ("tercer", 3), ("DÉCIMO", 10), ("decimo tercero", 13),
+                       ("decimotercero", 13), ("vigésima primera", 21), ("veintiuno", 21), ("treinta y dos", 32),
+                       ("XIV", 14), ("doce", 12)]:
+            self.assertEqual(number(tok, ES), n, tok)
+        self.assertIsNone(number("Mancha", ES))
+
+    def test_headings(self):
+        def title(line):
+            h = fetch.match_heading(line, {}, {}, ES)
+            return h and fetch.heading_title(h, {}, ES)
+        for line, expected in [("CAPÍTULO PRIMERO", "Capítulo 1"), ("Tratado Segundo", "Tratado 2"),
+                               ("Capítulo XII. Que trata de la aventura", "Capítulo 12: Que trata de la aventura"),
+                               ("PRIMERA PARTE", "Parte 1"), ("JORNADA TERCERA", "Jornada 3"), ("ACTO PRIMERO", "Acto 1"),
+                               ("-I-", "Capítulo 1"), ("--IV--", "Capítulo 4"), ("XII.", "Capítulo 12"),
+                               ("CAPÍTULO ÚLTIMO", "Capítulo último"), ("PRÓLOGO", "Prólogo"),
+                               ("LOS POLVOS DE LA CONDESA", None), ("Capítulo primero de mi vida, y lo demás", None)]:
+            self.assertEqual(title(line), expected, line)
+        self.assertEqual(titlecase("LOS DUENDES DEL CUZCO", ES), "Los Duendes del Cuzco")
+        self.assertEqual(titlecase("¡A LA CÁRCEL TODO CRISTO!", ES), "¡A la Cárcel Todo Cristo!")
+
+    def test_book_split_on_decorated_numerals(self):
+        book = (f"Marianela\n\nPor\n\nBenito Pérez Galdós\n\n\n-I-\n\nPerdido\n\n\n{self.PROSA}\n{self.PROSA}\n\n"
+                f"-II-\n\nGuiado\n\n\n{self.PROSA}\n{self.PROSA}\n\nFIN DE LA NOVELA\n\nMadrid.--Enero de 1878.\n")
+        chapters = split_book(book, {"sub": True}, ES)
+        self.assertEqual([c["title"] for c in chapters], ["Capítulo 1: Perdido", "Capítulo 2: Guiado"])
+        self.assertTrue(chapters[1]["content"].endswith("los sábados."))  # FIN and the dateline are not text
+
+    def test_verse_lines_in_lowercase_keep_their_breaks(self):
+        epitafio = ["Reposa aquí Dulcinea;", "y, aunque de carnes rolliza,", "la volvió en polvo y ceniza",
+                    "la muerte espantable y fea."]
+        self.assertTrue(is_verse(epitafio, ES))
+        self.assertFalse(is_verse(epitafio, EN))
+        self.assertFalse(is_verse(self.PROSA.split("\n")[:3], ES))
+
+    def test_spanish_markup_and_front_matter_words(self):
+        self.assertEqual(fetch.clean_inline("Texto [Ilustración: Retrato] y más.", ES), "Texto  y más.")
+        self.assertTrue(re.fullmatch(ES.EDITORIAL, "Nota de Transcripción"))
+        self.assertTrue(re.fullmatch(ES.CONTENTS, "ÍNDICE"))
+
+
 class TitlePages(unittest.TestCase):
     def test_title_page_left_between_chapters_goes(self):
         """books#37: a volume's title page at a chapter's end, and the byline after it, are not text."""
         chapters = [["Text.", "HENRY JAMES", "THE PORTRAIT OF A LADY"], ["By Henry James", "On the morrow."],
                     ["More.", "WAVERLEY", "OR", "’TIS SIXTY YEARS SINCE"]]
-        self.assertEqual(fetch.strip_title_pages(chapters, "The Portrait of a Lady"),
+        self.assertEqual(fetch.strip_title_pages(chapters, "The Portrait of a Lady", EN),
                          [["Text.", "HENRY JAMES"], ["On the morrow."], chapters[2]])
-        self.assertEqual(fetch.strip_title_pages([chapters[2]], "Waverley"), [["More."]])
-        self.assertEqual(fetch.strip_title_pages([["Words.", "The Wonderful Wizard of Oz"]], "The Wonderful Wizard of Oz"),
+        self.assertEqual(fetch.strip_title_pages([chapters[2]], "Waverley", EN), [["More."]])
+        self.assertEqual(fetch.strip_title_pages([["Words.", "The Wonderful Wizard of Oz"]], "The Wonderful Wizard of Oz", EN),
                          [["Words."]])
 
     def test_signatures_speech_and_poem_titles_stay(self):
         for blocks, title in [(["All art is quite useless.", "OSCAR WILDE"], "The Picture of Dorian Gray"),
                               (["came as an answer:", "‘Little Dorrit.’"], "Little Dorrit"),
                               (["And his name is", "DAVID COPPERFIELD."], "David Copperfield")]:
-            self.assertEqual(fetch.strip_title_pages([blocks], title), [blocks])
+            self.assertEqual(fetch.strip_title_pages([blocks], title, EN), [blocks])
         later = [["A poem."], ["By Blue Ontario’s Shore", "A chant."]]
-        self.assertEqual(fetch.strip_title_pages(later, "Leaves of Grass"), later)
+        self.assertEqual(fetch.strip_title_pages(later, "Leaves of Grass", EN), later)
 
     def test_gutenberg_title(self):
         self.assertEqual(fetch.gutenberg_title("Title: Rob Roy — Complete\n"), "Rob Roy")
