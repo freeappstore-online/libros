@@ -1,12 +1,16 @@
 {
-  "id": "books",
-  "name": "Books",
-  "shortName": "Books",
-  "language": "en",
-  "site": "https://books.freeappstore.online",
-  "marketingSite": "https://books.freewebstore.online/",
-  "title": "Books — Free Classic Books to Read & Listen",
-  "description": "Read classic books free online or save them offline. Enjoy fiction, philosophy, plays and poetry, with audio narration for selected titles. No account needed.",
-  "shareDescription": "Read classic books free online, save them offline, and listen to selected narrated titles. No account needed.",
-  "audio": { "dataset": "serge-ivo/books-audio", "voice": "af_heart", "engine": "kokoro" }
+  "id": "libros",
+  "name": "Libros",
+  "shortName": "Libros",
+  "language": "es",
+  "site": "https://libros.freeappstore.online",
+  "marketingSite": "https://libros.freewebstore.online/",
+  "title": "Libros — Clásicos gratis para leer y escuchar",
+  "description": "Lee clásicos de la literatura en español gratis, en línea o sin conexión: novela, teatro, poesía y ensayo de España y América, con audiolibros narrados en algunos títulos. Sin registro.",
+  "shareDescription": "Lee clásicos en español gratis, guárdalos para leer sin conexión y escucha los títulos narrados. Sin registro.",
+  "audio": {
+    "dataset": "serge-ivo/books-audio-es",
+    "voice": "ef_dora",
+    "engine": "kokoro"
+  }
 }

@@ -1,59 +1,26 @@
-# Books
+# Libros
 
-Listen to 130+ classic audiobooks with text-to-speech. Read or listen — your progress saves automatically.
+Clásicos de la literatura en español para leer y escuchar, gratis y sin registro. Novela, teatro,
+poesía y ensayo de España y América, con audiolibros narrados en algunos títulos y lectura sin conexión.
 
-**Category:** Learning  
-**Live:** [books.freeappstore.online](https://books.freeappstore.online)
+**Categoría:** Learning
+**En línea:** [libros.freeappstore.online](https://libros.freeappstore.online)
 
 ## Development
+
+Libros is the Spanish edition of [Books](https://github.com/freeappstore-online/books): a fork that keeps
+its own `edition/` (books, texts, covers, config) and takes everything else from Books.
+
+- Change the app itself (reader, player, pipeline) in **books**, never here. Its `Sync with books`
+  workflow brings the change in, and `Engine unchanged` fails a push that edits engine files here
+  (`docs/editions.md`).
+- Add or change books here, in `edition/`, as described in `docs/adding-books.md`.
+- How this app was made and how to keep it in sync: `docs/new-language-app.md`.
 
 ```bash
 pnpm install
 pnpm dev
 ```
-
-## Tests
-
-In `web/` (CI runs all of them on every push and pull request: `.github/workflows/test.yml`):
-
-```bash
-pnpm exec tsc -b          # typecheck, app and tests
-pnpm test                 # Vitest (unit; also run by the deploy before it builds): read-along, narration manifest, positions, text sizes, offline helpers
-pnpm exec playwright install chromium firefox webkit   # once
-pnpm test:e2e             # Playwright: builds, serves the build, runs every project
-pnpm test:e2e --project=chromium   # one project: chromium, firefox, webkit (iPhone 13) or edge
-```
-
-The e2e tests stub Hugging Face with silent WAVs and generated timings (`web/e2e/fixtures.ts`), so
-they need no network. The `edge` project covers offline and app-update edge cases in Chromium with
-the real service worker, against `web/e2e/edge/server.ts`, which can stall a stream and serve a second
-build of the app.
-
-Before closing a playback issue, also check on real devices, which headless browsers can't stand in for:
-
-- **iPhone, Safari** (and added to the Home Screen): Play starts on the first tap; audio carries on
-  with the screen locked; lock-screen play/pause, ±seek and previous/next chapter work; the next
-  chapter starts by itself with the screen locked; a call or unplugged headphones pause it and the
-  app shows Paused.
-- **Android, Chrome**: the same, from the notification controls.
-
-## Adding books
-
-See [docs/adding-books.md](docs/adding-books.md): text from Project Gutenberg, then pre-generated narration.
-
-## Deploy
-
-Push to main — auto-deploys to R2 via GitHub Actions.
-
-## Marketing catalogue
-
-The website at [books.freewebstore.online](https://books.freewebstore.online/) uses the same catalogue as the reader. After changing the catalogue, generate its crawlable HTML, filter script and metadata:
-
-```bash
-node scripts/marketing/generate.mjs /tmp/books-marketing
-```
-
-Through the FreeWebStore MCP session for Books, read the current `catalog` section and patch its `#bookGrid` contents, filters, count and JSON-LD with the fragments in `catalog.json`. Upload `books.js` with `set_site_script`, and apply `meta.json` with `set_meta`. Update the hero's book count too. Keep website styling, wrapper classes and help content in FreeWebStore. Review desktop, mobile and JavaScript-disabled previews, dry-run `push_update`, then publish. The catalogue must contain its reader links in the HTML before JavaScript runs; the script enhances the cards and adds filtering.
 
 ## License
 

@@ -1,5 +1,5 @@
 {
-  "appId": "books",
+  "appId": "libros",
   "applicationRoot": "web",
   "outputPath": "web/dist",
   "buildCommand": "pnpm build"
