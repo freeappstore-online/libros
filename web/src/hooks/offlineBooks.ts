@@ -9,6 +9,7 @@
  */
 import { useEffect, useMemo, useState } from 'react'
 import { CATALOG } from '../data/catalog'
+import { LOCALE, t } from '../locales'
 import { coverUrl } from '../components/BookCover'
 import type { AudioChapter } from './useAudioPlayer'
 import {
@@ -155,8 +156,8 @@ export function estimateAudioBytes(manifest: PreparedManifest, slug: string, voi
 }
 
 export function formatBytes(bytes: number): string {
-  if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`
-  return `${(bytes / (1024 * 1024)).toFixed(bytes < 10 * 1024 * 1024 ? 1 : 0)} MB`
+  if (bytes < 1024 * 1024) return `${LOCALE.number(Math.max(1, Math.round(bytes / 1024)))} KB`
+  return `${LOCALE.number(bytes / (1024 * 1024), bytes < 10 * 1024 * 1024 ? 1 : 0)} MB`
 }
 
 const isQuotaError = (err: unknown) => err instanceof DOMException && err.name === 'QuotaExceededError'
@@ -267,8 +268,8 @@ export function saveBook(slug: string, voice: string | null) {
     } catch (err) {
       if (!signal.aborted) {
         errors[slug] = isQuotaError(err)
-          ? 'Not enough storage space on this device. Free up some space and try again.'
-          : 'The download failed. Check your connection and device storage, then try again.'
+          ? t('save.errorSpace')
+          : t('save.errorDownload')
       }
       if (previous) {
         // An interrupted update keeps what it finished downloading
@@ -312,7 +313,7 @@ export function removeSavedBook(slug: string): Promise<void> {
     setSavedBook(slug, null)
     await removeFiles(Object.keys(saved.files))
   }).catch(() => {
-    errors[slug] = 'Could not remove the saved book. Check device storage and try again.'
+    errors[slug] = t('save.errorRemove')
   }).finally(emit)
 }
 
@@ -355,16 +356,16 @@ export function checkSavedText(slug: string) {
     .catch(() => textChecks.delete(slug))
 }
 
-/** What Update would bring to a saved book, or null when it is up to date. */
+/** What Update would bring to a saved book, in words, or null when it is up to date. */
 export function updateReason(slug: string, book: SavedBook, manifest: PreparedManifest): string | null {
-  if (missingFiles[slug]?.size) return 'missing downloads'
+  if (missingFiles[slug]?.size) return t('update.missing')
   const newChapters = book.voice ? preparedCount(manifest, slug, book.voice) - savedAudioChapters(book) : 0
-  if (newChapters > 0) return `${newChapters} new chapter${newChapters === 1 ? '' : 's'}`
-  if (textChanged[slug]) return 'updated text'
+  if (newChapters > 0) return t('update.newChapters', { count: newChapters })
+  if (textChanged[slug]) return t('update.text')
   const voice = book.voice
   if (voice && (manifest[voice]?.[slug] ?? []).some((d, i) => d !== null
-    && titleSeconds(getManifestExtras(), slug, i, voice) !== null && !(preparedTitleUrl(slug, i, voice) in book.files))) return 'chapter titles'
-  if ((book.format ?? 1) < SAVE_FORMAT) return book.voice ? 'read-along' : 'latest text'
+    && titleSeconds(getManifestExtras(), slug, i, voice) !== null && !(preparedTitleUrl(slug, i, voice) in book.files))) return t('update.titles')
+  if ((book.format ?? 1) < SAVE_FORMAT) return t(book.voice ? 'update.readAlong' : 'update.latestText')
   return null
 }
 

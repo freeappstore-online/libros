@@ -4,6 +4,7 @@ import { getManifestExtras, preparedCount, usePreparedManifest, VOICE } from '..
 import {
   checkSavedText, estimateAudioBytes, formatBytes, saveBook, updateReason, useOfflineBooks, useOnline,
 } from '../hooks/offlineBooks'
+import { t } from '../locales'
 
 /**
  * Save a book on this device (books#7). A narrated book saves its text and
@@ -19,7 +20,7 @@ export function SaveOfflineButton({ slug }: { slug: string }) {
   useEffect(() => {
     if (saving === wasSaving.current) return
     wasSaving.current = saving
-    setStatus(saving ? 'Saving for offline' : errors[slug] ? 'Saving failed' : saved[slug] ? 'Saved for offline' : 'Saving cancelled')
+    setStatus(t(saving ? 'save.statusSaving' : errors[slug] ? 'save.statusFailed' : saved[slug] ? 'save.statusSaved' : 'save.statusCancelled'))
   }, [saving, saved, errors, slug])
 
   return (
@@ -44,9 +45,9 @@ function SaveOfflineControl({ slug }: { slug: string }) {
       <button
         onClick={job.cancel}
         className="min-h-10 inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-accent/20 text-accent hover:bg-danger/20 hover:text-danger transition"
-        title="Cancel saving"
+        title={t('save.cancelTitle')}
       >
-        Saving {Math.round(job.progress * 100)}% · Cancel
+        {t('save.progress', { pct: Math.round(job.progress * 100) })}
       </button>
     )
   }
@@ -57,17 +58,17 @@ function SaveOfflineControl({ slug }: { slug: string }) {
 
   if (book) {
     const reason = updateReason(slug, book, manifest)
-    if (reason === 'missing downloads' && !online) {
-      return <span className="text-xs text-warning">Offline copy incomplete — reconnect to repair</span>
+    if (reason === t('update.missing') && !online) {
+      return <span className="text-xs text-warning">{t('save.incomplete')}</span>
     }
     if (reason && online) {
       return (
         <button
           onClick={() => saveBook(slug, book.voice)}
           className="min-h-10 inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-surface-hover text-accent hover:text-text transition"
-          title={`Download what the saved copy is missing: ${reason}`}
+          title={t('save.updateTitle', { reason })}
         >
-          {errors[slug] ? '↻ Retry update' : '↓ Update saved book'}
+          {t(errors[slug] ? 'save.retryUpdate' : 'save.update')}
         </button>
       )
     }
@@ -75,9 +76,9 @@ function SaveOfflineControl({ slug }: { slug: string }) {
       <Link
         to="/library"
         className="min-h-10 inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-success/15 text-success transition"
-        title="Saved on this device: manage it in My books"
+        title={t('save.savedTitle')}
       >
-        ✓ Saved offline
+        {t('offline.saved')}
       </Link>
     )
   }
@@ -88,12 +89,12 @@ function SaveOfflineControl({ slug }: { slug: string }) {
     <button
       onClick={() => saveBook(slug, narrated > 0 ? VOICE : null)}
       className="min-h-10 inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-surface-hover text-text-muted hover:text-accent transition"
-      title={narrated > 0 ? `Download the text and narration (~${formatBytes(estimate)}) to read and listen offline` : 'Download the text to read offline'}
+      title={narrated > 0 ? t('save.audioTitle', { size: formatBytes(estimate) }) : t('save.textTitle')}
     >
-      {errors[slug] ? '↻ Retry save' : narrated > 0
+      {errors[slug] ? t('save.retry') : narrated > 0
         // Phones have no room for the size next to Aa, Ch and Play; it is in the title
-        ? <>↓ Save offline<span className="hidden sm:inline">&nbsp;· ~{formatBytes(estimate)}</span></>
-        : '↓ Save to read offline'}
+        ? <>{t('save.save')}<span className="hidden sm:inline">&nbsp;{t('save.size', { size: formatBytes(estimate) })}</span></>
+        : t('save.saveText')}
     </button>
   )
 }
@@ -104,7 +105,7 @@ export function SaveOfflineError({ slug }: { slug: string }) {
   if (!errors[slug] || jobs[slug]) return null
   return (
     <div role="alert" className="border-b border-border bg-danger/10 px-4 py-3 text-center text-sm text-danger">
-      Couldn't save this book: {errors[slug]}
+      {t('save.error', { error: errors[slug] })}
     </div>
   )
 }

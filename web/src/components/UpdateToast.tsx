@@ -3,6 +3,7 @@ import { pwa } from '../fas-capabilities/pwa'
 import { useAudioPlayer } from '../hooks/useAudioPlayer'
 import { useOfflineBooks } from '../hooks/offlineBooks'
 import { reloadWithAppUpdate } from '../hooks/appUpdate'
+import { t } from '../locales'
 
 /** An open app looks for a new version this often, and whenever it comes back to the foreground. */
 const UPDATE_CHECK_MS = 60 * 60 * 1000
@@ -102,19 +103,19 @@ export function UpdateToast() {
       style={{ bottom: 'calc(max(var(--player-h, 0px), env(safe-area-inset-bottom)) + 1rem)' }}
     >
       <span className="flex-1 min-w-0">
-        New version available
-        {playing && <span className="block text-xs text-text-dim">Reloading stops playback.</span>}
-        {saving && <span className="block text-xs text-text-dim">Reload once saving has finished.</span>}
-        {failed && <span className="block text-xs text-warning">Couldn't load the update. Try Reload again.</span>}
+        {t('update.available')}
+        {playing && <span className="block text-xs text-text-dim">{t('update.stopsPlayback')}</span>}
+        {saving && <span className="block text-xs text-text-dim">{t('update.afterSaving')}</span>}
+        {failed && <span className="block text-xs text-warning">{t('update.failed')}</span>}
       </span>
       <button
         onClick={reload}
         disabled={saving || reloading}
         className="shrink-0 rounded-lg bg-accent px-3 py-1.5 text-xs font-semibold text-btn-text hover:bg-accent-hover disabled:opacity-40 transition"
       >
-        {reloading ? 'Reloading…' : 'Reload'}
+        {t(reloading ? 'update.reloading' : 'update.reload')}
       </button>
-      <button onClick={() => setDismissed(true)} disabled={reloading} aria-label="Not now" className="shrink-0 p-1 text-text-dim hover:text-text transition">
+      <button onClick={() => setDismissed(true)} disabled={reloading} aria-label={t('update.notNow')} className="shrink-0 p-1 text-text-dim hover:text-text transition">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
       </button>
     </div>

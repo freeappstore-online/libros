@@ -18,7 +18,7 @@ test('Audiobooks filters the list to narrated books, combines with search, and s
   await toggle.click()
   await expect(toggle).toHaveAttribute('aria-pressed', 'true')
   await expect(page).toHaveURL(/[?&]audio=1/)
-  await expect(page.getByRole('heading', { name: '1 audiobooks' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: '1 audiobook', exact: true })).toBeVisible()
   await expect(listed(page)).toHaveCount(1)
   await expect(listed(page).first()).toHaveAttribute('href', `/read/${SLUG}/`)
 

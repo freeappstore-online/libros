@@ -24,7 +24,8 @@ function fontStylesheets(): string[] {
 async function warm() {
   for (const href of fontStylesheets()) {
     const css = await (await fetch(href)).text()
-    // The book text is English: the latin subset is the one shown
+    // The latin subset (U+0000-00FF, Œ œ, punctuation) covers the editions' languages so far: English,
+    // and Spanish, Portuguese and French accents, ñ, ç, ¿ ¡ « » (books#54). Cyrillic needs its own (#60)
     const files = [...css.matchAll(/\/\* latin \*\/[^}]*?url\((https:\/\/fonts\.gstatic\.com\/[^)]+)\)/g)].map(m => m[1])
     await Promise.all(files.map(url => fetch(url)))
   }

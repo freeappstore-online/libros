@@ -37,6 +37,26 @@ format of each file is in [edition/README.md](../edition/README.md).
 - **Another edition:** `BOOKS_EDITION=/path/to/edition` points the build, the unit tests, the
   scripts and the marketing generator at it.
 
+## The interface language
+
+The interface is in the edition's `language` (books#54). Its words are in the engine, one locale file
+per language, `web/src/locales/<language>.json`, so a fix to a translation reaches every app in that
+language. A build for a language without a locale file fails.
+
+- **Messages:** `t(key, vars)` (`src/locales/index.ts`) fills a message's `{placeholders}`. A message with
+  plural forms (`{ "one": …, "other": … }`) is chosen by `Intl.PluralRules` from `count`.
+- **Formats** (`src/locales/locale.ts`): numbers, BCE years ("800 a. C."), reading times (`books.json`
+  has `readMinutes`), and genre labels. `genre` in a book file is one of the fixed keys `Fiction`,
+  `Non-Fiction`, `Drama` and `Poetry`, whatever the edition's language; tags are written in it.
+- **The static pages** (`index.html`, the book pages) take their words from the same locale:
+  `vite.config.ts` reads the locale file from disk and passes it to `bookPage`.
+- **Checks:** `test/unit/locales.test.ts` fails when a locale's keys or placeholders differ from
+  `en.json`'s, or when a component renders text of its own instead of the locale's. The `es`
+  Playwright project walks the app built from a Spanish test edition (`web/test/edition-es/`) and fails
+  on any English left on screen.
+- **A new language:** copy `en.json`, translate every message, add it to `LOCALES` in
+  `src/locales/index.ts`, and have a fluent speaker read it before the app launches.
+
 ## Keeping a language app in sync
 
 - **`scripts/edition/sync-upstream.sh`** merges `books` main into a language app:

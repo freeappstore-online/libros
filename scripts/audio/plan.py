@@ -14,12 +14,15 @@ audio in VOICE, since a title is only ever added to a narrated chapter.
 import json, os, sys
 from huggingface_hub import HfApi
 from manifest import ALL_EXISTING, audio_prefix, check_slugs, existing
+from engine import check, language
 from segments import spoken_title
 
 SHARD_CHARS = 600_000
 TITLE_COST = 40  # chars a title clip's two ffmpeg passes take as long as
 
 catalog, repo, voice, *only = sys.argv[1:]
+check(catalog, voice)  # an edition its engine can't narrate stops here, before any job starts
+lang = language(catalog)
 force, titles = "--force" in only, "--titles" in only
 only = [slug for slug in only if slug not in ("--force", "--titles")]
 if titles and only == [ALL_EXISTING]:
@@ -32,7 +35,7 @@ for slug in sorted(set(only)):
     for i, ch in enumerate(json.load(open(os.path.join(catalog, f"{slug}.json")))["chapters"]):
         audio = f"{audio_prefix(catalog, voice, slug)}/{i}"
         if titles:
-            chars = len(spoken_title(ch["title"], "en")) + TITLE_COST  # the edition's language: books#57
+            chars = len(spoken_title(ch["title"], lang)) + TITLE_COST
             if chars == TITLE_COST or f"{audio}.m4a" not in files or (f"{audio}.title.m4a" in files and not force):
                 continue
         else:

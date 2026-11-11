@@ -7,6 +7,7 @@ export interface CatalogBook {
   author: string
   authorBio: string
   year: number
+  /** One of the fixed keys Fiction, Non-Fiction, Drama, Poetry; the locale has its label */
   genre: string
   tags: string[]
   /** BCP 47 language of the text, e.g. 'en' */
@@ -14,7 +15,8 @@ export interface CatalogBook {
   description: string
   excerpt: string
   chapters: number
-  readTime: string
+  /** Reading time in minutes, a multiple of 15; the locale writes it (books#54) */
+  readMinutes: number
   coverGradient: string
   coverAccent: string
   contentPath: string
@@ -25,8 +27,4 @@ export interface CatalogBook {
 /** A book's address. Ends in "/" so the host serves its static page, read/<slug>/index.html (books#47). */
 export function readPath(slug: string): string {
   return `/read/${slug}/`
-}
-
-export function formatYear(year: number): string {
-  return year > 0 ? String(year) : `${Math.abs(year)} BC`
 }

@@ -2,9 +2,13 @@ import {
   BOOK_TEXT, UI_TEXT,
   setReaderFontSize, setUiScale, useReaderFontSize, useUiScale,
 } from '../hooks/usePreferences'
+import { t } from '../locales'
 
 interface RowProps {
   label: string
+  /** The A buttons' names */
+  smaller: string
+  larger: string
   hint: string
   value: number
   unit: string
@@ -12,7 +16,7 @@ interface RowProps {
   onChange: (v: number) => void
 }
 
-function SizeRow({ label, hint, value, unit, range, onChange }: RowProps) {
+function SizeRow({ label, smaller, larger, hint, value, unit, range, onChange }: RowProps) {
   const btn = 'w-10 h-10 shrink-0 rounded-lg bg-surface-hover text-text hover:bg-border disabled:opacity-40 transition'
   return (
     <div>
@@ -21,14 +25,14 @@ function SizeRow({ label, hint, value, unit, range, onChange }: RowProps) {
         <span className="text-xs text-text-muted tabular-nums">
           {value}{unit}
           {value !== range.default && (
-            <button onClick={() => onChange(range.default)} className="ml-2 text-accent hover:underline">Reset</button>
+            <button onClick={() => onChange(range.default)} className="ml-2 text-accent hover:underline">{t('textSize.reset')}</button>
           )}
         </span>
       </div>
       <p className="text-xs text-text-dim mb-2">{hint}</p>
       <div className="flex items-center gap-2">
         <button className={btn} onClick={() => onChange(value - range.step)} disabled={value <= range.min}
-          aria-label={`Smaller ${label.toLowerCase()}`}><span className="text-xs">A</span></button>
+          aria-label={smaller}><span className="text-xs">A</span></button>
         <input
           type="range" min={range.min} max={range.max} step={range.step} value={value}
           onChange={e => onChange(Number(e.target.value))}
@@ -36,7 +40,7 @@ function SizeRow({ label, hint, value, unit, range, onChange }: RowProps) {
           className="flex-1 accent-accent"
         />
         <button className={btn} onClick={() => onChange(value + range.step)} disabled={value >= range.max}
-          aria-label={`Larger ${label.toLowerCase()}`}><span className="text-lg leading-none">A</span></button>
+          aria-label={larger}><span className="text-lg leading-none">A</span></button>
       </div>
     </div>
   )
@@ -49,18 +53,22 @@ export function TextSizeControls({ preview = true }: { preview?: boolean }) {
   return (
     <div className="space-y-5">
       <SizeRow
-        label="Book text size"
-        hint="Only the text of the book you're reading."
+        label={t('textSize.book')}
+        smaller={t('textSize.bookSmaller')}
+        larger={t('textSize.bookLarger')}
+        hint={t('textSize.bookHint')}
         value={bookSize} unit="px" range={BOOK_TEXT} onChange={setReaderFontSize}
       />
       {preview && (
         <p className="text-text-muted rounded-lg bg-page p-3 -mt-2" style={{ fontSize: `${bookSize}px`, lineHeight: 1.8 }}>
-          Alice was beginning to get very tired of sitting by her sister on the bank.
+          {t('textSize.sample')}
         </p>
       )}
       <SizeRow
-        label="Interface text size"
-        hint="Menus, buttons, labels and the player. Book text stays as set above."
+        label={t('textSize.ui')}
+        smaller={t('textSize.uiSmaller')}
+        larger={t('textSize.uiLarger')}
+        hint={t('textSize.uiHint')}
         value={uiScale} unit="%" range={UI_TEXT} onChange={setUiScale}
       />
     </div>

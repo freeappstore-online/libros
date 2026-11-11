@@ -19,6 +19,8 @@ const APP = CONFIG.site
 const SITE = CONFIG.marketingSite
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
 const genres = ['Fiction', 'Non-Fiction', 'Drama', 'Poetry']
+// books.json has the reading time in minutes (books#54); this English catalogue writes it as the app's en.json does
+const readTime = minutes => [Math.floor(minutes / 60) && `${Math.floor(minutes / 60)}h`, minutes % 60 && `${minutes % 60}min`].filter(Boolean).join(' ')
 // Alice is the deliberately selected first audiobook. Do not advertise the
 // incomplete narration left in the dataset by the cancelled catalogue run.
 const narrated = new Set(['alice-in-wonderland'])
@@ -50,7 +52,7 @@ const fragmentSize = cards.length + filters.length + structured.length
 // Leave room for the website's own heading, controls and CSS within FWS's
 // 51200-character section limit. Its design belongs to the website session.
 if (fragmentSize > 45000) throw new Error(`Catalogue fragments need another section: ${fragmentSize} characters`)
-const rows = CATALOG.map(b => [b.id, b.title, b.author, b.year, genres.indexOf(b.genre), b.chapters, b.readTime,
+const rows = CATALOG.map(b => [b.id, b.title, b.author, b.year, genres.indexOf(b.genre), b.chapters, readTime(b.readMinutes),
   Number(COVERS.has(b.id))])
 const script = readFileSync(resolve(here, 'books.js.template'), 'utf8').replace('{{BOOKS}}', JSON.stringify(rows)).replace('{{APP}}', JSON.stringify(APP))
 mkdirSync(out, { recursive: true })

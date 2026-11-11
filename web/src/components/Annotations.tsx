@@ -4,6 +4,7 @@ import {
   HIGHLIGHT_COLORS, formatSeconds, removeAnnotation, sortAnnotations, updateAnnotation,
   type Annotation, type HighlightColor,
 } from '../hooks/annotations'
+import { LOCALE, t } from '../locales'
 
 export function BookmarkIcon({ size = 18 }: { size?: number }) {
   return (
@@ -13,9 +14,12 @@ export function BookmarkIcon({ size = 18 }: { size?: number }) {
   )
 }
 
+/** A colour's name inside a sentence: "Highlight yellow" */
+const colorName = (c: HighlightColor) => t(`color.${c}`).toLocaleLowerCase(LOCALE.language)
+
 /** Delete, asking first when there is a note to lose. */
 function deleteAnnotation(slug: string, a: Annotation): boolean {
-  if (a.note && !window.confirm('Delete this note?')) return false
+  if (a.note && !window.confirm(t('notes.deleteConfirm'))) return false
   removeAnnotation(slug, a.id)
   return true
 }
@@ -42,18 +46,18 @@ export function AnnotationList({ slug, list, chapterTitles, onJump }: {
             </span>
             <div className="min-w-0 flex-1 [overflow-wrap:anywhere]">
               <div className="text-xs text-text-dim truncate">
-                {chapterTitles[a.chapterIdx] ?? `Chapter ${a.chapterIdx + 1}`}
+                {chapterTitles[a.chapterIdx] ?? t('chapter.full', { chapter: a.chapterIdx + 1 })}
                 {a.seconds !== undefined && ` · ${formatSeconds(a.seconds)}`}
-                {a.stale && <span className="text-warning"> · Text changed</span>}
+                {a.stale && <span className="text-warning"> · {t('notes.textChanged')}</span>}
               </div>
               <button onClick={() => onJump(a)} className="block w-full text-left text-sm text-text-muted hover:text-text transition line-clamp-3">
-                {a.kind === 'highlight' ? `“${a.text}”` : a.text}
+                {a.kind === 'highlight' ? t('notes.quote', { text: a.text }) : a.text}
               </button>
               {a.note && <p className="mt-1 text-sm italic text-text whitespace-pre-wrap">{a.note}</p>}
               <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1">
-                <button onClick={() => onJump(a)} className={link}>Go to</button>
-                <button onClick={() => setEditing(a)} className={link}>{a.note ? 'Edit' : 'Add note'}</button>
-                <button onClick={() => deleteAnnotation(slug, a)} className="min-h-10 text-xs text-text-muted hover:text-danger transition">Delete</button>
+                <button onClick={() => onJump(a)} className={link}>{t('notes.goTo')}</button>
+                <button onClick={() => setEditing(a)} className={link}>{t(a.note ? 'notes.edit' : 'notes.addNote')}</button>
+                <button onClick={() => deleteAnnotation(slug, a)} className="min-h-10 text-xs text-text-muted hover:text-danger transition">{t('notes.delete')}</button>
               </div>
             </div>
           </li>
@@ -84,7 +88,7 @@ export function HighlightToolbar({ rect, onHighlight }: { rect: DOMRect; onHighl
   return (
     <div
       role="toolbar"
-      aria-label="Highlight"
+      aria-label={t('notes.highlight')}
       // Keep the selection while pressing the buttons
       onMouseDown={e => e.preventDefault()}
       className="fixed z-50 flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-2 shadow-xl"
@@ -94,13 +98,13 @@ export function HighlightToolbar({ rect, onHighlight }: { rect: DOMRect; onHighl
         <button
           key={c}
           onClick={() => onHighlight(c, false)}
-          aria-label={`Highlight ${HIGHLIGHT_COLORS[c].label.toLowerCase()}`}
-          title={`Highlight ${HIGHLIGHT_COLORS[c].label.toLowerCase()}`}
+          aria-label={t('notes.highlightIn', { color: colorName(c) })}
+          title={t('notes.highlightIn', { color: colorName(c) })}
           className={`w-9 h-9 rounded-full border border-border ${HIGHLIGHT_COLORS[c].className}`}
         />
       ))}
       <button onClick={() => onHighlight('yellow', true)} className="ml-auto min-h-10 px-2 text-sm font-semibold text-accent hover:text-accent-hover transition">
-        Note
+        {t('notes.note')}
       </button>
     </div>
   )
@@ -120,22 +124,22 @@ export function AnnotationEditor({ slug, annotation, onClose }: { slug: string; 
       <div
         role="dialog"
         aria-modal="true"
-        aria-label={annotation.kind === 'highlight' ? 'Edit highlight' : 'Edit bookmark'}
+        aria-label={t(annotation.kind === 'highlight' ? 'notes.editHighlight' : 'notes.editBookmark')}
         onClick={e => e.stopPropagation()}
         onKeyDown={e => { if (e.key === 'Escape') onClose() }}
         className="w-full max-w-md rounded-xl border border-border bg-surface p-4 shadow-xl text-left"
       >
         <p className="text-sm text-text-muted line-clamp-4 mb-3">
-          {annotation.kind === 'highlight' ? `“${annotation.text}”` : annotation.text}
+          {annotation.kind === 'highlight' ? t('notes.quote', { text: annotation.text }) : annotation.text}
         </p>
         {annotation.kind === 'highlight' && (
-          <div className="flex items-center gap-2 mb-3" role="radiogroup" aria-label="Highlight colour">
+          <div className="flex items-center gap-2 mb-3" role="radiogroup" aria-label={t('notes.highlightColour')}>
             {(Object.keys(HIGHLIGHT_COLORS) as HighlightColor[]).map(c => (
               <button
                 key={c}
                 role="radio"
                 aria-checked={color === c}
-                aria-label={HIGHLIGHT_COLORS[c].label}
+                aria-label={t(`color.${c}`)}
                 onClick={() => setColor(c)}
                 className={`w-7 h-7 rounded-full border-2 ${HIGHLIGHT_COLORS[c].className} ${color === c ? 'border-text' : 'border-transparent'}`}
               />
@@ -146,8 +150,8 @@ export function AnnotationEditor({ slug, annotation, onClose }: { slug: string; 
           autoFocus
           value={note}
           onChange={e => setNote(e.target.value)}
-          placeholder="Add a note"
-          aria-label="Note"
+          placeholder={t('notes.placeholder')}
+          aria-label={t('notes.note')}
           rows={4}
           className="w-full bg-page border border-border rounded-lg px-3 py-2 text-sm text-text placeholder-text-dim focus:outline-none focus:border-accent transition"
         />
@@ -156,11 +160,11 @@ export function AnnotationEditor({ slug, annotation, onClose }: { slug: string; 
             onClick={() => { if (deleteAnnotation(slug, annotation)) onClose() }}
             className="text-sm text-text-muted hover:text-danger transition"
           >
-            Delete
+            {t('notes.delete')}
           </button>
           <div className="flex gap-2">
-            <button onClick={onClose} className="px-3 py-1.5 rounded-lg text-sm border border-border text-text-muted hover:text-text transition">Cancel</button>
-            <button onClick={save} className="px-3 py-1.5 rounded-lg text-sm font-semibold bg-accent hover:bg-accent-hover text-btn-text transition">Save</button>
+            <button onClick={onClose} className="px-3 py-1.5 rounded-lg text-sm border border-border text-text-muted hover:text-text transition">{t('common.cancel')}</button>
+            <button onClick={save} className="px-3 py-1.5 rounded-lg text-sm font-semibold bg-accent hover:bg-accent-hover text-btn-text transition">{t('common.save')}</button>
           </div>
         </div>
       </div>

@@ -1,7 +1,9 @@
 import { useState, useMemo } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { CATALOG, GENRES, ALL_TAGS } from '../data/catalog'
-import { formatYear, readPath, type CatalogBook } from '../data/book'
+import { readPath, type CatalogBook } from '../data/book'
+import { EDITION } from '../data/edition'
+import { LOCALE, t } from '../locales'
 import { BookCover } from '../components/BookCover'
 import { NavBar } from '../components/NavBar'
 import { booksInProgress, progressPercent, useFinished, type BookProgress } from '../hooks/useReadingProgress'
@@ -47,7 +49,7 @@ export function CatalogPage() {
       books = books.filter(({ book }) =>
         book.title.toLowerCase().includes(q) ||
         book.author.toLowerCase().includes(q) ||
-        book.genre.toLowerCase().includes(q) ||
+        LOCALE.genre(book.genre).toLowerCase().includes(q) ||
         book.tags.some(t => t.toLowerCase().includes(q))
       )
     }
@@ -82,17 +84,17 @@ export function CatalogPage() {
 
       <main>
       {/* The page's h1 comes first for screen readers; the Continue shelf is shown above the hero */}
-      <h1 className="sr-only">Books: read or listen to classic books for free</h1>
+      <h1 className="sr-only">{t('catalog.heading', { name: EDITION.name })}</h1>
       <ContinueShelf entries={entries} dim={dim} />
 
       <section className="px-4 md:px-6 py-10 md:py-16 max-w-6xl mx-auto">
         <div>
           <h2 className="text-3xl sm:text-5xl md:text-6xl font-display leading-tight mb-3 md:mb-4">
-            Discover Books,<br />
-            <span className="text-accent italic">Read or Listen</span>
+            {t('catalog.hero')}<br />
+            <span className="text-accent italic">{t('catalog.heroAccent')}</span>
           </h2>
           <p className="text-base md:text-xl text-text-muted max-w-2xl mb-6 md:mb-8">
-            Read any book in the catalog for free. Books marked Audiobook can also be listened to, with the text following along.
+            {t('catalog.intro')}
           </p>
 
           <div className="space-y-3 md:space-y-0 md:flex md:flex-wrap md:gap-3 mb-4">
@@ -100,8 +102,8 @@ export function CatalogPage() {
               type="text"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              placeholder="Search books, authors, genres, topics..."
-              aria-label="Search books"
+              placeholder={t('catalog.searchPlaceholder')}
+              aria-label={t('catalog.searchLabel')}
               aria-keyshortcuts="/"
               data-shortcut="search"
               className="w-full md:flex-1 md:min-w-64 bg-surface border border-border rounded-lg px-4 py-3 text-text placeholder-text-dim focus:border-accent transition"
@@ -110,21 +112,21 @@ export function CatalogPage() {
               <select
                 value={genre}
                 onChange={e => setGenre(e.target.value)}
-                aria-label="Genre"
+                aria-label={t('catalog.genre')}
                 className="flex-1 md:flex-none bg-surface border border-border rounded-lg px-3 py-3 text-text text-base md:text-sm"
               >
-                <option value="">All Genres</option>
-                {GENRES.map(g => <option key={g} value={g}>{g}</option>)}
+                <option value="">{t('catalog.allGenres')}</option>
+                {GENRES.map(g => <option key={g} value={g}>{LOCALE.genre(g)}</option>)}
               </select>
               <select
                 value={sort}
                 onChange={e => setSort(e.target.value as 'title' | 'author' | 'year')}
-                aria-label="Sort"
+                aria-label={t('catalog.sort')}
                 className="flex-1 md:flex-none bg-surface border border-border rounded-lg px-3 py-3 text-text text-base md:text-sm"
               >
-                <option value="title">By Title</option>
-                <option value="author">By Author</option>
-                <option value="year">By Year</option>
+                <option value="title">{t('catalog.byTitle')}</option>
+                <option value="author">{t('catalog.byAuthor')}</option>
+                <option value="year">{t('catalog.byYear')}</option>
               </select>
               <button
                 onClick={() => setAudioOnly(!audioOnly)}
@@ -133,7 +135,7 @@ export function CatalogPage() {
                   audioOnly ? 'bg-accent border-accent text-btn-text' : 'bg-surface border-border text-text hover:border-accent'
                 }`}
               >
-                Audiobooks
+                {t('catalog.audiobooks')}
               </button>
             </div>
           </div>
@@ -143,7 +145,7 @@ export function CatalogPage() {
             {tag && (
               <button
                 onClick={() => setTag('')}
-                aria-label={`Remove filter: ${tag}`}
+                aria-label={t('catalog.removeFilter', { tag })}
                 className="shrink-0 min-h-10 md:min-h-0 text-xs px-3 py-1 rounded-full bg-accent text-btn-text font-semibold"
               >
                 {tag} &times;
@@ -165,9 +167,9 @@ export function CatalogPage() {
       {!filtering && audiobooks.length > 0 && (
         <section className="px-4 md:px-6 pb-10 md:pb-12 max-w-6xl mx-auto">
           <div className="flex items-baseline justify-between gap-3 mb-4 md:mb-6">
-            <h2 className="text-sm font-semibold text-text-dim uppercase tracking-wider">Audiobooks</h2>
+            <h2 className="text-sm font-semibold text-text-dim uppercase tracking-wider">{t('catalog.audiobooks')}</h2>
             <button onClick={() => setAudioOnly(true)} className="min-h-10 md:min-h-0 text-sm text-accent hover:underline">
-              See all audiobooks
+              {t('catalog.seeAllAudiobooks')}
             </button>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
@@ -180,7 +182,7 @@ export function CatalogPage() {
 
       {!filtering && (
         <section className="px-4 md:px-6 pb-10 md:pb-12 max-w-6xl mx-auto">
-          <h2 className="text-sm font-semibold text-text-dim uppercase tracking-wider mb-4 md:mb-6">Featured</h2>
+          <h2 className="text-sm font-semibold text-text-dim uppercase tracking-wider mb-4 md:mb-6">{t('catalog.featured')}</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
             {featured.map(({ book, narratedChapters }) => (
               <ShelfBook key={book.id} book={book} narrated={narratedChapters} className={dim(book.id)} />
@@ -191,7 +193,9 @@ export function CatalogPage() {
 
       <section className="px-4 md:px-6 pb-20 max-w-6xl mx-auto">
         <h2 className="text-sm font-semibold text-text-dim uppercase tracking-wider mb-4 md:mb-6">
-          {filtering ? `${filtered.length} ${audioOnly && !search && !genre && !tag ? 'audiobooks' : 'results'}` : 'All Books'}
+          {filtering
+            ? t(audioOnly && !search && !genre && !tag ? 'catalog.audiobookCount' : 'catalog.resultCount', { count: filtered.length })
+            : t('catalog.allBooks')}
         </h2>
         <div className="grid gap-3 md:gap-4">
           {filtered.map(({ book, narratedChapters }) => (
@@ -202,7 +206,7 @@ export function CatalogPage() {
           ))}
           {filtered.length === 0 && (
             <p className="text-text-muted py-12 text-center">
-              {audioOnly && !manifest ? 'Loading audiobooks…' : audioOnly && !online ? 'No audiobooks saved on this device.' : 'No books match your search.'}
+              {t(audioOnly && !manifest ? 'catalog.loadingAudiobooks' : audioOnly && !online ? 'catalog.noAudiobooksOffline' : 'catalog.noMatch')}
             </p>
           )}
         </div>
@@ -211,7 +215,7 @@ export function CatalogPage() {
 
       <footer className="pt-4 pb-8 text-center">
         <a href="https://freeappstore.online" target="_blank" rel="noopener" className="inline-block py-3 text-[11px] font-medium text-text-dim hover:text-text transition-colors">
-          Part of FreeAppStore — free forever
+          {t('catalog.footer')}
         </a>
       </footer>
     </div>
@@ -224,7 +228,7 @@ function ShelfBook({ book, narrated, className }: { book: CatalogBook; narrated:
     <Link to={readPath(book.id)} className={`group ${className}`}>
       <BookCover book={book} size="lg" />
       <div className="mt-2 flex items-center justify-between gap-2">
-        <p className="text-xs md:text-sm text-text-muted group-hover:text-text transition">{book.readTime}</p>
+        <p className="text-xs md:text-sm text-text-muted group-hover:text-text transition">{LOCALE.readTime(book.readMinutes)}</p>
         {narrated > 0 && <AudiobookPill narrated={narrated} chapters={book.chapters} />}
       </div>
     </Link>
@@ -247,7 +251,7 @@ function BookListItem({ book, narrated, saved, online, progress, finished }: {
         <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-1">
           <div className="min-w-0">
             <h3 className="font-display text-base md:text-lg [overflow-wrap:anywhere] group-hover:text-accent transition">{book.title}</h3>
-            <p className="text-xs md:text-sm text-text-muted mt-0.5">{book.author} &middot; {formatYear(book.year)} &middot; {book.genre}</p>
+            <p className="text-xs md:text-sm text-text-muted mt-0.5">{book.author} &middot; {LOCALE.year(book.year)} &middot; {LOCALE.genre(book.genre)}</p>
           </div>
           {narrated > 0 && <AudiobookPill narrated={narrated} chapters={book.chapters} />}
         </div>
@@ -259,18 +263,18 @@ function BookListItem({ book, narrated, saved, online, progress, finished }: {
             <span key={t} className="text-[11px] md:text-xs px-1.5 md:px-2 py-0.5 rounded-full border border-border text-text-dim">{t}</span>
           ))}
           <span className="text-[11px] md:text-xs text-text-dim ml-auto flex flex-wrap justify-end items-center gap-x-2">
-            {saved && <span className="text-success">✓ Saved offline</span>}
-            {!saved && !online && <span>Not saved: unavailable offline</span>}
+            {saved && <span className="text-success">{t('offline.saved')}</span>}
+            {!saved && !online && <span>{t('catalog.notSaved')}</span>}
             {!finished && pct > 0 && (
               <span className="inline-flex items-center gap-1">
                 <span className="inline-block w-12 h-1 bg-surface-hover rounded-full overflow-hidden">
                   <span className="block h-full bg-accent rounded-full" style={{ width: `${pct}%` }} />
                 </span>
-                <span className="text-accent">{pct}%</span>
+                <span className="text-accent">{t('progress.percent', { pct })}</span>
               </span>
             )}
-            {finished && <span className="text-success">✓ Finished</span>}
-            {book.readTime}
+            {finished && <span className="text-success">{t('progress.finished')}</span>}
+            {LOCALE.readTime(book.readMinutes)}
           </span>
         </div>
       </div>
@@ -293,20 +297,20 @@ function ContinueShelf({ entries, dim }: { entries: { book: CatalogBook; narrate
 
   return (
     <section aria-labelledby="continue-heading" className="px-4 md:px-6 pt-6 md:pt-8 max-w-6xl mx-auto">
-      <h2 id="continue-heading" className="text-sm font-semibold text-text-dim uppercase tracking-wider mb-4">Continue</h2>
+      <h2 id="continue-heading" className="text-sm font-semibold text-text-dim uppercase tracking-wider mb-4">{t('catalog.continue')}</h2>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
         {books.map(({ book, narrated, progress }) => {
           const pct = progressPercent(progress)
           return (
             <div key={book.id} className={dim(book.id)}>
-              <Link to={readPath(book.id)} className="group block" aria-label={`Continue reading ${book.title}`}>
+              <Link to={readPath(book.id)} className="group block" aria-label={t('catalog.continueReading', { title: book.title })}>
                 <BookCover book={book} size="lg" />
               </Link>
               <div className="mt-2 h-1 bg-surface-hover rounded-full overflow-hidden">
                 <div className="h-full bg-accent rounded-full" style={{ width: `${pct}%` }} />
               </div>
               <div className="mt-1 flex items-center justify-between gap-2">
-                <p className="text-xs text-text-dim">{pct}% · Ch {progress.chapterIdx + 1}/{book.chapters}</p>
+                <p className="text-xs text-text-dim">{t('progress.percent', { pct })} · {t('chapter.short', { chapter: progress.chapterIdx + 1, chapters: book.chapters })}</p>
                 {narrated && (
                   <ListenButton book={book} className="shrink-0 rounded-full bg-accent px-2.5 py-1 text-[11px] font-semibold text-btn-text hover:bg-accent-hover transition" />
                 )}
@@ -323,7 +327,7 @@ function ContinueShelf({ entries, dim }: { entries: { book: CatalogBook; narrate
 function AudiobookPill({ narrated, chapters }: { narrated: number; chapters: number }) {
   return (
     <span className="shrink-0 rounded-full bg-success-soft px-2 py-1 text-[11px] font-semibold text-success">
-      Audiobook{narrated < chapters && ` · ${narrated}/${chapters} ch`}
+      {narrated < chapters ? t('catalog.audiobookPartial', { narrated, chapters }) : t('catalog.audiobook')}
     </span>
   )
 }

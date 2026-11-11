@@ -42,6 +42,15 @@ export function loadTimings(slug: string, chapterIdx: number): Promise<TimingSeg
   return p
 }
 
+/**
+ * A sentence ends at . ! ? or … (with any closing quotes or brackets) before a space, as the
+ * narration pipeline splits them (scripts/audio/segments.py), and not when a lowercase word follows:
+ * `“Oh dear!” said the Rabbit`, and Spanish dialogue `¿Qué hora es? —preguntó`, whose tag opens
+ * with a dash (or Gutenberg's --), as the Spanish profile has it (scripts/catalog/languages/es.py).
+ * Sentences may start with ¿ or ¡ and close with », which this keeps.
+ */
+const SENTENCE_END = /[.!?…]+["'”’»)\]]*(?=\s)(?![^\S\n]+(?:[—–-]+[^\S\n]?)?\p{Ll})|\n/gu
+
 /** Sentence ranges of `text`. */
 export function sentenceRanges(text: string): CharRange[] {
   const ranges: CharRange[] = []
@@ -51,15 +60,20 @@ export function sentenceRanges(text: string): CharRange[] {
     if (start < end) ranges.push([start, end])
     start = end
   }
-  for (const m of text.matchAll(/[.!?]+["'”’)\]]*(?=\s)|\n/g)) push(m.index + m[0].length)
+  for (const m of text.matchAll(SENTENCE_END)) push(m.index + m[0].length)
   push(text.length)
   return ranges
 }
 
-/** Rough syllable count, plus a beat for the pause after a comma or dash. */
-function wordWeight(word: string): number {
-  const syllables = word.match(/[aeiouy]+/gi)?.length ?? 1
-  return Math.max(1, syllables) + (/[,;:—–-]["'”’)\]]*$/.test(word) ? 1 : 0)
+/**
+ * Rough syllable count, plus a beat for the pause after a comma or dash. Vowels count with their
+ * accents (á, ü, ã, ê…: compared without them), and a stressed í or ú next to another vowel is a
+ * syllable of its own (Spanish día, oído; books#54).
+ */
+export function wordWeight(word: string): number {
+  const plain = word.normalize('NFD').replace(/\p{M}/gu, '')
+  const syllables = (plain.match(/[aeiouy]+/gi)?.length ?? 0) + (word.match(/[aeiou][íú]|[íú][aeiou]/gi)?.length ?? 0)
+  return Math.max(1, syllables) + (/[,;:—–-]["'”’»)\]]*$/.test(word) ? 1 : 0)
 }
 
 function words(text: string, [start, end]: CharRange): { range: CharRange; weight: number }[] {

@@ -1,0 +1,16 @@
+{
+  "id": "libros",
+  "name": "Libros",
+  "shortName": "Libros",
+  "language": "es",
+  "site": "https://libros.freeappstore.online",
+  "marketingSite": "https://libros.freewebstore.online/",
+  "title": "Libros: clásicos gratis para leer y escuchar",
+  "description": "Lee libros clásicos gratis en línea o guárdalos para leerlos sin conexión. Algunos títulos tienen narración en audio. No necesitas una cuenta.",
+  "shareDescription": "Lee libros clásicos gratis en línea, guárdalos sin conexión y escucha los títulos narrados. No necesitas una cuenta.",
+  "audio": {
+    "dataset": "serge-ivo/books-audio",
+    "voice": "af_heart",
+    "engine": "kokoro"
+  }
+}

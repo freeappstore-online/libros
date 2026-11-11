@@ -1,0 +1,46 @@
+[
+  {
+    "id": "a-christmas-carol",
+    "title": "A Christmas Carol",
+    "author": "Charles Dickens",
+    "authorBio": "English novelist and social critic, the greatest of the Victorian era.",
+    "year": 1843,
+    "genre": "Fiction",
+    "tags": [
+      "classic",
+      "christmas",
+      "british",
+      "ghost story"
+    ],
+    "language": "en",
+    "description": "Miserly Ebenezer Scrooge is visited by three ghosts who show him the error of his ways.",
+    "excerpt": "Marley was dead: to begin with. There is no doubt whatever about that...",
+    "chapters": 6,
+    "readMinutes": 120,
+    "coverGradient": "from-green-800 to-emerald-950",
+    "coverAccent": "#16A34A",
+    "contentPath": "/catalog/a-christmas-carol.json"
+  },
+  {
+    "id": "alice-in-wonderland",
+    "title": "Alice's Adventures in Wonderland",
+    "author": "Lewis Carroll",
+    "authorBio": "English writer, mathematician, and photographer. Known for his wordplay and imaginative fiction.",
+    "year": 1865,
+    "genre": "Fiction",
+    "tags": [
+      "fantasy",
+      "classic",
+      "children",
+      "adventure"
+    ],
+    "language": "en",
+    "description": "A young girl falls through a rabbit hole into a fantastical underground world filled with peculiar creatures and absurd situations.",
+    "excerpt": "Alice was beginning to get very tired of sitting by her sister on the bank, and of having nothing to do...",
+    "chapters": 12,
+    "readMinutes": 105,
+    "coverGradient": "from-violet-900 to-indigo-950",
+    "coverAccent": "#A78BFA",
+    "contentPath": "/catalog/alice-in-wonderland.json"
+  }
+]

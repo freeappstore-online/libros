@@ -26,6 +26,7 @@ import { getTheme, setTheme, type Theme } from '../hooks/useTheme'
 import { CATALOG } from '../data/catalog'
 import { BookNotFound } from '../components/BookNotFound'
 import { chapterSeconds, isNarrated, preparedUrl, usePreparedManifest } from '../hooks/preparedAudio'
+import { LOCALE, t } from '../locales'
 
 /** Chapter offset of the text at screen point (x, y), or null when it isn't in `container`. */
 function offsetAtPoint(container: HTMLElement, x: number, y: number): number | null {
@@ -44,8 +45,10 @@ function firstVisibleOffset(container: HTMLElement): number {
   return offsetAtPoint(container, rect.left + 1, Math.min(inset + 16, rect.bottom - 1)) ?? 0
 }
 
-// Keep the source's own numbering: a preface must not shift Chapter 1 to 2.
-const chapterLabel = (title: string) => title.replace(/^Chapter (\d+)(?=:|$)/, '$1')
+// Keep the source's own numbering: a preface must not shift Chapter 1 to 2. The texts are in the
+// edition's language, so its word for "Chapter" is the locale's.
+const CHAPTER_NUMBER = new RegExp(`^${t('reader.chapterWord')} (\\d+)(?=:|$)`)
+const chapterLabel = (title: string) => title.replace(CHAPTER_NUMBER, '$1')
 const CHAPTERS_VISIBLE_KEY = 'bp-chapters-visible'
 
 export function ReaderPage() {
@@ -217,7 +220,7 @@ export function ReaderPage() {
       if (chaptersList.length > 0) setActiveChapter(chaptersList[startIdx].id)
     } catch {
       setNotSavedOffline(!navigator.onLine)
-      setChapters([{ id: 'excerpt', title: 'Excerpt', content: catalogBook.excerpt }])
+      setChapters([{ id: 'excerpt', title: t('reader.excerpt'), content: catalogBook.excerpt }])
       setActiveChapter('excerpt')
     }
   }
@@ -393,7 +396,7 @@ export function ReaderPage() {
   }
 
   if (loading) {
-    return <div className="min-h-dvh bg-page text-text flex items-center justify-center">Loading...</div>
+    return <div className="min-h-dvh bg-page text-text flex items-center justify-center">{t('app.loading')}</div>
   }
 
   if (!catalogBook) return <BookNotFound />
@@ -407,13 +410,13 @@ export function ReaderPage() {
       <div data-reader-top="" className="sticky top-[calc(env(safe-area-inset-top)-3.125rem)] md:top-[calc(env(safe-area-inset-top)-3.25rem)] lg:top-[env(safe-area-inset-top)] z-30 bg-page">
         <NavBar
           title={catalogBook.title}
-          subtitle={catalogBook.author ? `${catalogBook.author} · ${catalogBook.genre}` : catalogBook.genre}
+          subtitle={catalogBook.author ? `${catalogBook.author} · ${LOCALE.genre(catalogBook.genre)}` : LOCALE.genre(catalogBook.genre)}
           actions={<>
             <button
               onClick={() => (searchOpen ? closeSearch() : setSearchOpen(true))}
               aria-expanded={searchOpen}
-              aria-label="Search in this book"
-              title="Search in this book (/)"
+              aria-label={t('search.label')}
+              title={t('search.title')}
               className={`min-h-10 min-w-10 flex items-center justify-center p-1.5 rounded-lg border border-border transition ${searchOpen ? 'bg-surface-hover text-text' : 'text-text-muted hover:text-text'}`}
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
@@ -423,8 +426,8 @@ export function ReaderPage() {
             <button
               onClick={() => setNotesOpen(o => !o)}
               aria-expanded={notesOpen}
-              aria-label="Bookmarks and notes"
-              title="Bookmarks and notes"
+              aria-label={t('notes.title')}
+              title={t('notes.title')}
               className={`min-h-10 min-w-10 flex items-center justify-center p-1.5 rounded-lg border border-border transition ${notesOpen ? 'bg-surface-hover text-text' : 'text-text-muted hover:text-text'}`}
             >
               <BookmarkIcon />
@@ -433,10 +436,10 @@ export function ReaderPage() {
               onClick={() => setSidebarOpen(!sidebarOpen)}
               aria-expanded={sidebarOpen}
               aria-controls="chapter-drawer"
-              aria-label={`Chapters: chapter ${visibleChapterIdx + 1} of ${chapters.length}`}
+              aria-label={t('reader.chaptersButton', { chapter: visibleChapterIdx + 1, chapters: chapters.length })}
               className="md:hidden min-h-10 px-3 py-1.5 rounded-lg text-xs text-text-muted border border-border"
             >
-              Ch {visibleChapterIdx + 1}/{chapters.length}
+              {t('chapter.short', { chapter: visibleChapterIdx + 1, chapters: chapters.length })}
             </button>
             <button
               onClick={toggleDesktopChapters}
@@ -444,7 +447,7 @@ export function ReaderPage() {
               aria-controls="desktop-chapters"
               className="hidden md:inline-flex min-h-10 items-center px-3 py-1.5 rounded-lg text-xs text-text-muted hover:text-text border border-border"
             >
-              {desktopChaptersOpen ? 'Hide chapters' : 'Show chapters'}
+              {t(desktopChaptersOpen ? 'chapters.hide' : 'chapters.show')}
             </button>
             {/* Phones: Save offline, text size and theme sit behind "More" on a row of their own,
                 so search, bookmarks, chapters and Play fit on one line; from sm they're inline */}
@@ -452,8 +455,8 @@ export function ReaderPage() {
               onClick={() => setMoreOpen(o => !o)}
               aria-expanded={moreOpen}
               aria-controls="reader-more"
-              aria-label="More reading options"
-              title="More reading options"
+              aria-label={t('reader.more')}
+              title={t('reader.more')}
               className={`sm:hidden min-h-10 min-w-10 flex items-center justify-center rounded-lg border border-border transition ${moreOpen ? 'bg-surface-hover text-text' : 'text-text-muted hover:text-text'}`}
             >
               <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2" /><circle cx="12" cy="12" r="2" /><circle cx="19" cy="12" r="2" /></svg>
@@ -467,8 +470,8 @@ export function ReaderPage() {
                   onClick={() => setTextPanelOpen(o => !o)}
                   aria-expanded={textPanelOpen}
                   aria-controls="text-size-panel"
-                  aria-label="Text size"
-                  title="Text size"
+                  aria-label={t('reader.textSize')}
+                  title={t('reader.textSize')}
                   className={`min-h-10 px-2.5 py-1.5 rounded-lg text-sm border border-border transition ${textPanelOpen ? 'bg-surface-hover text-text' : 'text-text-muted hover:text-text'}`}
                 >
                   <span aria-hidden="true"><span className="text-xs">A</span><span className="text-base font-semibold">A</span></span>
@@ -476,7 +479,7 @@ export function ReaderPage() {
                 {textPanelOpen && (
                   <>
                     <div className="fixed inset-0 z-40" onClick={() => setTextPanelOpen(false)} />
-                    <div id="text-size-panel" role="group" aria-label="Text size" className="absolute right-4 md:right-6 top-full mt-1 z-50 w-[min(20rem,calc(100vw-2rem))] rounded-xl border border-border bg-surface p-4 shadow-xl text-left">
+                    <div id="text-size-panel" role="group" aria-label={t('reader.textSize')} className="absolute right-4 md:right-6 top-full mt-1 z-50 w-[min(20rem,calc(100vw-2rem))] rounded-xl border border-border bg-surface p-4 shadow-xl text-left">
                       <TextSizeControls preview={false} />
                     </div>
                   </>
@@ -485,12 +488,12 @@ export function ReaderPage() {
               <select
                 value={theme}
                 onChange={e => { const t = e.target.value as Theme; setThemeState(t); setTheme(t) }}
-                aria-label="Theme"
+                aria-label={t('reader.theme')}
                 className="min-h-10 bg-surface border border-border rounded-lg px-2 py-1.5 text-base sm:text-xs text-text-muted"
               >
-                <option value="dark">Dark</option>
-                <option value="light">Light</option>
-                <option value="sepia">Sepia</option>
+                <option value="dark">{t('theme.dark')}</option>
+                <option value="light">{t('theme.light')}</option>
+                <option value="sepia">{t('theme.sepia')}</option>
               </select>
             </div>
             {audioBook && <PlayButton book={audioBook} chapterIdx={visibleChapterIdx} />}
@@ -500,30 +503,30 @@ export function ReaderPage() {
         {searchOpen && <BookSearch chapters={chapters} onJump={onSearchJump} onClose={closeSearch} />}
 
         {notesOpen && slug && (
-          <section aria-label="Bookmarks and notes" className="border-b border-border bg-surface">
+          <section aria-label={t('notes.title')} className="border-b border-border bg-surface">
             <div className="max-w-5xl mx-auto px-4 md:px-6 py-3">
               <div className="flex flex-wrap items-center gap-2">
                 <button
                   onClick={addBookmark}
                   disabled={excerpt}
-                  title={excerpt ? 'Not in the excerpt: open the book online or save it offline' : undefined}
+                  title={excerpt ? t('notes.notInExcerpt') : undefined}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-semibold bg-accent hover:bg-accent-hover text-btn-text transition disabled:opacity-40"
                 >
-                  <BookmarkIcon size={14} /> Bookmark this place
+                  <BookmarkIcon size={14} /> {t('notes.bookmarkHere')}
                 </button>
                 {annotations.length > 0 && (
                   <button
                     onClick={() => downloadMarkdown(`${slug}-notes.md`, annotationsMarkdown(catalogBook.title, catalogBook.author, chapters.map(c => c.title), annotations))}
                     className="px-3 py-1.5 rounded-lg text-sm border border-border text-text-muted hover:text-text transition"
                   >
-                    Export Markdown
+                    {t('notes.export')}
                   </button>
                 )}
-                <button onClick={() => setNotesOpen(false)} aria-label="Close bookmarks and notes" className="ml-auto px-2.5 py-1.5 rounded-lg text-sm border border-border text-text-muted hover:text-text transition">&times;</button>
+                <button onClick={() => setNotesOpen(false)} aria-label={t('notes.close')} className="ml-auto px-2.5 py-1.5 rounded-lg text-sm border border-border text-text-muted hover:text-text transition">&times;</button>
               </div>
               {annotations.length === 0 ? (
                 <p className="mt-3 text-sm text-text-muted">
-                  Bookmarks keep your place (while listening, the spoken sentence). Select text to highlight it or add a note.
+                  {t('notes.empty')}
                 </p>
               ) : (
                 <div className="mt-2 max-h-[min(24rem,55dvh)] overflow-y-auto">
@@ -536,7 +539,7 @@ export function ReaderPage() {
 
         {/* Mobile chapter drawer */}
         {sidebarOpen && (
-          <nav id="chapter-drawer" aria-label="Chapters" className="md:hidden border-b border-border bg-surface px-4 py-3 max-h-60 overflow-y-auto">
+          <nav id="chapter-drawer" aria-label={t('chapters.title')} className="md:hidden border-b border-border bg-surface px-4 py-3 max-h-60 overflow-y-auto">
             <div className="space-y-1">
               {chapters.map((ch, i) => (
                 <button
@@ -549,7 +552,7 @@ export function ReaderPage() {
                   }`}
                 >
                   {playingChapterIdx === i && player.playing && (
-                    <span className="mt-1.5 w-2 h-2 rounded-full bg-accent animate-pulse shrink-0" role="img" aria-label="Playing" />
+                    <span className="mt-1.5 w-2 h-2 rounded-full bg-accent animate-pulse shrink-0" role="img" aria-label={t('player.playing')} />
                   )}
                   <span className="min-w-0 whitespace-normal [overflow-wrap:anywhere]">{chapterLabel(ch.title)}</span>
                 </button>
@@ -565,19 +568,19 @@ export function ReaderPage() {
       <SaveOfflineError slug={slug || ''} />
       {notSavedOffline && (
         <div className="border-b border-border bg-warning/10 px-4 py-3 text-center text-sm text-warning">
-          You're offline and this book isn't saved on this device. Only the excerpt is available.
+          {t('reader.offlineExcerpt')}
         </div>
       )}
       {!notSavedOffline && listenOffline && (
         <div role="status" className="border-b border-border bg-warning/10 px-4 py-3 text-center text-sm text-warning">
-          You're offline. Listening needs a connection unless the book is saved on this device.
+          {t('reader.offlineListen')}
         </div>
       )}
 
       <div className={`max-w-5xl mx-auto px-4 md:px-6 py-6 md:py-8 ${desktopChaptersOpen ? 'md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-8' : ''}`}>
         {/* Desktop sidebar */}
         <aside id="desktop-chapters" aria-labelledby="chapters-heading" className={desktopChaptersOpen ? 'hidden md:block' : 'hidden'}>
-          <h2 id="chapters-heading" className="text-sm font-semibold text-text-muted uppercase tracking-wider mb-3">Chapters</h2>
+          <h2 id="chapters-heading" className="text-sm font-semibold text-text-muted uppercase tracking-wider mb-3">{t('chapters.title')}</h2>
           <div className="space-y-1 sticky top-20 max-h-[calc(100dvh-6rem)] overflow-y-auto">
             {chapters.map((ch, i) => (
               <button
@@ -590,7 +593,7 @@ export function ReaderPage() {
                 }`}
               >
                 {playingChapterIdx === i && player.playing && (
-                  <span className="mt-1.5 w-2 h-2 rounded-full bg-accent animate-pulse shrink-0" role="img" aria-label="Playing" />
+                  <span className="mt-1.5 w-2 h-2 rounded-full bg-accent animate-pulse shrink-0" role="img" aria-label={t('player.playing')} />
                 )}
                 <span className="min-w-0 whitespace-normal [overflow-wrap:anywhere]">{chapterLabel(ch.title)}</span>
               </button>
@@ -611,7 +614,7 @@ export function ReaderPage() {
                 className={`text-text-muted whitespace-pre-wrap ${chapterNarrated ? 'cursor-pointer' : ''}`}
                 style={{ fontSize: `${fontSize}px`, lineHeight: 1.8 }}
                 onClick={handleTextClick}
-                title={chapterNarrated ? 'Click to start listening from here' : undefined}
+                title={chapterNarrated ? t('reader.listenFromHere') : undefined}
                 marks={marks}
                 focus={focus}
               />
@@ -638,13 +641,13 @@ export function ReaderPage() {
                     aria-pressed={Boolean(finished[slug])}
                     className={`text-sm font-semibold transition ${finished[slug] ? 'text-success' : 'text-accent hover:text-accent-hover'}`}
                   >
-                    {finished[slug] ? '✓ Finished' : 'Mark as finished'}
+                    {t(finished[slug] ? 'progress.finished' : 'progress.markFinished')}
                   </button>
                 ) : <span />}
               </div>
             </article>
           ) : (
-            <p className="text-text-muted">Select a chapter to start reading.</p>
+            <p className="text-text-muted">{t('reader.selectChapter')}</p>
           )}
         </main>
       </div>

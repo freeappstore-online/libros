@@ -8,6 +8,7 @@ import {
   type PreparedManifest,
 } from './preparedAudio'
 import { getChapterPause, getContinueChapters, getReadTitles } from './usePreferences'
+import { t } from '../locales'
 import { playableManifest } from './offlineBooks'
 import {
   loadRate, saveRate, loadHistory, saveHistory, loadPosition, savePosition, saveSleepChoice,
@@ -226,7 +227,7 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
       halt()
       releaseNarration()
       setPlaying(false)
-      if (!navigator.onLine) setError("You're offline, and the rest of this book isn't saved on this device.")
+      if (!navigator.onLine) setError(t('player.errorOfflineRest'))
       return
     }
     if (idx !== start) charOffset = undefined
@@ -247,8 +248,8 @@ export function AudioPlayerProvider({ children }: { children: ReactNode }) {
       halt()
       setPlaying(false)
       setError(navigator.onLine
-        ? "This chapter couldn't be played. Press Play to try again."
-        : "Connection lost. Press Play when you're back online.")
+        ? t('player.errorChapter')
+        : t('player.errorConnection'))
     }
     // From the chapter's start: the pause (auto-advance only) and its spoken title first (books#37)
     const before = {

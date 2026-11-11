@@ -8,6 +8,7 @@ import { readPath } from '../data/book'
 import { fetchChapters, usePlayableManifest } from '../hooks/offlineBooks'
 import { SleepButton, SpeedButton, formatTime } from './PlayerMenus'
 import { ListeningOptions } from './ListeningSettings'
+import { t } from '../locales'
 
 export function AudioPlayer() {
   const {
@@ -66,7 +67,7 @@ export function AudioPlayer() {
     <div
       ref={trackHeight}
       role="region"
-      aria-label="Player"
+      aria-label={t('player.region')}
       className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-surface pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]"
     >
       {/* Expanded panel */}
@@ -74,16 +75,16 @@ export function AudioPlayer() {
         <div id="player-panel" className="border-b border-border px-4 py-3 max-w-4xl mx-auto max-h-64 overflow-y-auto">
           {/* Tabs */}
           <div className="flex gap-4 mb-3 border-b border-border">
-            {(['chapters', 'history', 'settings'] as const).map(t => (
+            {(['chapters', 'history', 'settings'] as const).map(name => (
               <button
-                key={t}
-                onClick={() => setTab(t)}
-                aria-pressed={tab === t}
+                key={name}
+                onClick={() => setTab(name)}
+                aria-pressed={tab === name}
                 className={`py-2 text-xs font-semibold uppercase tracking-wider transition ${
-                  tab === t ? 'text-accent' : 'text-text-dim hover:text-text-muted'
+                  tab === name ? 'text-accent' : 'text-text-dim hover:text-text-muted'
                 }`}
               >
-                {t === 'chapters' ? `Chapters (${totalChapters})` : t === 'history' ? `Recent (${narratedHistory.length})` : 'Listening'}
+                {name === 'chapters' ? t('player.chaptersTab', { count: totalChapters }) : name === 'history' ? t('player.recentTab', { count: narratedHistory.length }) : t('listening.title')}
               </button>
             ))}
           </div>
@@ -118,7 +119,7 @@ export function AudioPlayer() {
           {tab === 'history' && (
             <div className="space-y-1">
               {narratedHistory.length === 0 ? (
-                <p className="text-xs text-text-dim py-2">No listening history yet.</p>
+                <p className="text-xs text-text-dim py-2">{t('player.noHistory')}</p>
               ) : (
                 narratedHistory.map(h => (
                   <button
@@ -131,10 +132,10 @@ export function AudioPlayer() {
                   >
                     <div className="min-w-0">
                       <div className="font-medium truncate text-sm">{h.title}</div>
-                      <div className="text-xs text-text-muted">{h.author} · Ch {h.chapterIdx + 1}</div>
+                      <div className="text-xs text-text-muted">{h.author} · {t('chapter.number', { chapter: h.chapterIdx + 1 })}</div>
                     </div>
                     {book.slug === h.slug && playing && (
-                      <span className="w-2 h-2 rounded-full bg-accent animate-pulse shrink-0" role="img" aria-label="Playing" />
+                      <span className="w-2 h-2 rounded-full bg-accent animate-pulse shrink-0" role="img" aria-label={t('player.playing')} />
                     )}
                   </button>
                 ))
@@ -161,8 +162,8 @@ export function AudioPlayer() {
             onPointerUp={commitScrub}
             onKeyUp={commitScrub}
             onBlur={commitScrub}
-            aria-label="Position in chapter"
-            aria-valuetext={`${formatTime(time)} of ${formatTime(duration)}`}
+            aria-label={t('player.position')}
+            aria-valuetext={t('player.positionValue', { time: formatTime(time), duration: formatTime(duration) })}
             className="flex-1 h-6 accent-accent cursor-pointer"
           />
           <span className="w-12" aria-hidden="true">-{formatTime(Math.max(0, duration - time))}</span>
@@ -179,23 +180,23 @@ export function AudioPlayer() {
         >
           <div className="text-sm font-semibold truncate min-w-0">{book.title}</div>
           <div className="text-xs text-text-muted truncate shrink-0 sm:shrink">
-            <span className="hidden sm:inline">{chapter?.title} · </span>Ch {chapterIdx + 1}/{totalChapters}
+            <span className="hidden sm:inline">{chapter?.title} · </span>{t('chapter.short', { chapter: chapterIdx + 1, chapters: totalChapters })}
           </div>
         </button>
 
         {/* Controls */}
         <div className="flex items-center gap-0">
           <button onClick={prevChapter} disabled={chapterIdx === 0}
-            className="hidden sm:flex w-[40px] h-[40px] items-center justify-center text-text-muted hover:text-text disabled:opacity-30 transition" title="Previous chapter (Shift+←)" aria-label="Previous chapter" aria-keyshortcuts="Shift+ArrowLeft">
+            className="hidden sm:flex w-[40px] h-[40px] items-center justify-center text-text-muted hover:text-text disabled:opacity-30 transition" title={t('player.previousChapterKeys')} aria-label={t('player.previousChapter')} aria-keyshortcuts="Shift+ArrowLeft">
             <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
           </button>
           <button onClick={() => skip(-15)} disabled={!seekable}
-            className="w-[40px] h-[40px] flex items-center justify-center text-text-muted hover:text-text disabled:opacity-30 transition" title="Back 15 seconds (←)" aria-label="Back 15 seconds" aria-keyshortcuts="ArrowLeft">
+            className="w-[40px] h-[40px] flex items-center justify-center text-text-muted hover:text-text disabled:opacity-30 transition" title={t('player.backKeys')} aria-label={t('player.back')} aria-keyshortcuts="ArrowLeft">
             <SkipIcon seconds={15} back />
           </button>
           <button onClick={playing ? pause : play}
             className="p-2 w-[44px] h-[44px] shrink-0 rounded-full bg-accent text-btn-text hover:bg-accent-hover transition flex items-center justify-center"
-            title={playing ? 'Pause (Space)' : 'Resume (Space)'} aria-label={playing ? 'Pause' : 'Resume'} aria-keyshortcuts="Space K">
+            title={t(playing ? 'player.pauseKeys' : 'player.resumeKeys')} aria-label={t(playing ? 'player.pause' : 'player.resume')} aria-keyshortcuts="Space K">
             {loading ? (
               <div className="w-5 h-5 border-2 border-btn-text border-t-transparent rounded-full animate-spin" />
             ) : playing ? (
@@ -205,11 +206,11 @@ export function AudioPlayer() {
             )}
           </button>
           <button onClick={() => skip(30)} disabled={!seekable}
-            className="w-[40px] h-[40px] flex items-center justify-center text-text-muted hover:text-text disabled:opacity-30 transition" title="Forward 30 seconds (→)" aria-label="Forward 30 seconds" aria-keyshortcuts="ArrowRight">
+            className="w-[40px] h-[40px] flex items-center justify-center text-text-muted hover:text-text disabled:opacity-30 transition" title={t('player.forwardKeys')} aria-label={t('player.forward')} aria-keyshortcuts="ArrowRight">
             <SkipIcon seconds={30} />
           </button>
           <button onClick={nextChapter} disabled={chapterIdx >= totalChapters - 1}
-            className="hidden sm:flex w-[40px] h-[40px] items-center justify-center text-text-muted hover:text-text disabled:opacity-30 transition" title="Next chapter (Shift+→)" aria-label="Next chapter" aria-keyshortcuts="Shift+ArrowRight">
+            className="hidden sm:flex w-[40px] h-[40px] items-center justify-center text-text-muted hover:text-text disabled:opacity-30 transition" title={t('player.nextChapterKeys')} aria-label={t('player.nextChapter')} aria-keyshortcuts="Shift+ArrowRight">
             <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zm10-12v12h2V6h-2z"/></svg>
           </button>
         </div>
@@ -221,7 +222,7 @@ export function AudioPlayer() {
         <button onClick={() => setExpanded(!expanded)}
           className="w-[40px] h-[40px] flex items-center justify-center text-text-muted hover:text-text transition"
           aria-expanded={expanded} aria-controls="player-panel"
-          aria-label={expanded ? 'Hide chapters' : 'Show chapters'}>
+          aria-label={t(expanded ? 'chapters.hide' : 'chapters.show')}>
           <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
             {expanded
               ? <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>

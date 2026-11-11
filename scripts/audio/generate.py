@@ -22,6 +22,7 @@ import json, os, re, shutil, subprocess, sys, time
 import numpy as np
 import soundfile as sf
 from huggingface_hub import hf_hub_url
+from engine import language, synthesizer
 from manifest import audio_prefix, publish
 from segments import sentences, spoken_title, utf16
 
@@ -36,13 +37,13 @@ EDGE = 0.1  # seconds of silence kept before and after a title clip's speech
 OUT = "out"
 
 
-def narrate(kokoro, content: str, voice: str, lang: str) -> tuple[np.ndarray, int, list]:
+def narrate(say, content: str, lang: str) -> tuple[np.ndarray, int, list]:
     """The chapter's audio, its sample rate, and when each sentence is spoken."""
     u16 = utf16(content)
     parts, segments, length, sr = [], [], 0, 24_000
     for start, end, ends_paragraph in sentences(content, lang):
         try:
-            samples, sr = kokoro.create(content[start:end], voice=voice, speed=1.0, lang=lang)
+            samples, sr = say(content[start:end])
         except ValueError as err:  # nothing to say, e.g. "* * *"
             print(f"  skipped {content[start:end]!r}: {err}", flush=True)
             continue
@@ -103,12 +104,12 @@ def encode(wav: str, m4a: str, lufs: float = LUFS) -> None:
 
 
 if __name__ == "__main__":
-    from kokoro_onnx import Kokoro
     models, catalog, repo, voice, *units = sys.argv[1:]
     titles_only = "--titles" in units
     units = [u for u in units if u != "--titles"]
-    lang = "en-gb" if voice[0] == "b" else "en-us"
-    kokoro = Kokoro(f"{models}/kokoro-v1.0.onnx", f"{models}/voices-v1.0.bin")
+    # The edition's language and engine (edition/config.json, books#57)
+    lang = language(catalog)
+    say = synthesizer(catalog, models, voice)
     books: dict[str, list] = {}
     level: dict[str, float] = {}  # --titles: the loudness of each book's published chapters
     last_upload = time.time()
@@ -136,7 +137,7 @@ if __name__ == "__main__":
         os.makedirs(dest, exist_ok=True)
         t = time.time()
         if not titles_only:
-            samples, sr, segments = narrate(kokoro, chapter["content"], voice, lang)
+            samples, sr, segments = narrate(say, chapter["content"], lang)
             sf.write(f"{dest}/{i}.wav", samples, sr)
             encode(f"{dest}/{i}.wav", f"{dest}/{i}.m4a")
             os.remove(f"{dest}/{i}.wav")
@@ -144,7 +145,7 @@ if __name__ == "__main__":
             print(f"{unit}: {len(samples) / sr / 60:.1f} min audio in {(time.time() - t) / 60:.1f} min", flush=True)
         title = spoken_title(chapter["title"], lang)
         if title:
-            samples, sr = kokoro.create(title, voice=voice, speed=1.0, lang=lang)
+            samples, sr = say(title)
             samples = trim(samples, sr)
             sf.write(f"{dest}/{i}.title.wav", samples, sr)
             if titles_only and slug not in level:  # its first chapter in this run, read over HTTP

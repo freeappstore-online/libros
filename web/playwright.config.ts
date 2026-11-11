@@ -6,6 +6,8 @@ const PORT = 4318
 const baseURL = `http://localhost:${PORT}`
 // The offline edge cases run against their own server (e2e/edge/server.ts)
 const EDGE_PORT = 4319
+// The Spanish interface (books#54): a build of the Spanish test edition (test/edition-es/README.md)
+const ES_PORT = 4320
 
 const chrome = {
   ...devices['Desktop Chrome'],
@@ -37,24 +39,32 @@ export default defineConfig({
       url: `http://localhost:${EDGE_PORT}/__e2e`,
       reuseExistingServer: false,
     },
+    {
+      // In .cache/, which the platform's compliance check skips like dist/
+      command: `BOOKS_EDITION=test/edition-es vite build --outDir .cache/dist-es && vite preview --outDir .cache/dist-es --port ${ES_PORT} --strictPort`,
+      url: `http://localhost:${ES_PORT}`,
+      timeout: 120_000,
+      reuseExistingServer: false,
+    },
   ],
   projects: [
-    { name: 'chromium', testIgnore: 'edge/**', use: chrome },
+    { name: 'chromium', testIgnore: ['edge/**', 'es/**'], use: chrome },
     {
       name: 'firefox',
-      testIgnore: 'edge/**',
+      testIgnore: ['edge/**', 'es/**'],
       use: {
         ...devices['Desktop Firefox'],
         viewport: { width: 1200, height: 800 },
         launchOptions: { firefoxUserPrefs: { 'media.autoplay.default': 0, 'media.autoplay.blocking_policy': 0 } },
       },
     },
-    { name: 'webkit', testIgnore: 'edge/**', use: { ...devices['iPhone 13'] } },
+    { name: 'webkit', testIgnore: ['edge/**', 'es/**'], use: { ...devices['iPhone 13'] } },
     // Playwright runs (and routes) service workers in Chromium only
     {
       name: 'edge',
       testMatch: 'edge/**/*.spec.ts',
       use: { ...chrome, baseURL: `http://localhost:${EDGE_PORT}`, serviceWorkers: 'allow' },
     },
+    { name: 'es', testMatch: 'es/**/*.spec.ts', use: { ...chrome, baseURL: `http://localhost:${ES_PORT}` } },
   ],
 })

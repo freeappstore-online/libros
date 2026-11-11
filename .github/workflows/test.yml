@@ -3,7 +3,8 @@ name: Tests
 # Typecheck, unit tests (Vitest) and end-to-end tests (Playwright) on every
 # push and pull request (books#16). The e2e projects run as parallel jobs:
 # chromium, firefox, webkit (iPhone 13) and edge (offline and app-update edge
-# cases, Chromium with the service worker). How to run them: "Tests" in README.md.
+# cases, Chromium with the service worker) and es (the interface in Spanish, books#54).
+# How to run them: "Tests" in README.md.
 #
 # The deploy (deploy.yml) is the platform's pinned reusable workflow and can't
 # wait for these jobs (a job can't need a job in another workflow file, and
@@ -59,6 +60,7 @@ jobs:
           - { project: firefox, browser: firefox }
           - { project: webkit, browser: webkit }
           - { project: edge, browser: chromium }
+          - { project: es, browser: chromium }
     defaults:
       run:
         working-directory: web

@@ -18,7 +18,12 @@ ALICE = "alice-in-wonderland"
 
 class Manifest(unittest.TestCase):
     def test_restored_text_never_reuses_legacy_audio(self):
-        with tempfile.TemporaryDirectory() as catalog:
+        with tempfile.TemporaryDirectory() as edition:
+            # An edition's texts, next to its config (plan.py reads the language and engine there)
+            catalog = os.path.join(edition, "texts")
+            os.makedirs(catalog)
+            with open(os.path.join(edition, "config.json"), "w") as f:
+                json.dump({"language": "en", "audio": {"engine": "kokoro"}}, f)
             slug = "restored-book"
             with open(os.path.join(catalog, f"{slug}.json"), "w") as f:
                 json.dump({"narrationRevision": "complete-text-v1", "chapters": [{"title": "One", "content": "Full text"}]}, f)
@@ -252,6 +257,25 @@ class Spanish(unittest.TestCase):
                          ["—¿Venta es ésta? —replicó don Quijote.", "Sr. D. Pedro llegó con Vd. y la Sra. Dña. Inés.",
                           "¡Ay!", "¿Quién es?", "--Cállate, mala lengua.", "--Iré --dijo él.",
                           "«Tengo que hablar contigo».", "Luego."])
+
+
+class EngineTest(unittest.TestCase):
+    """The engine speaks the edition's language, never one guessed from the voice id (books#57)."""
+
+    def test_kokoro_language_codes(self):
+        from engine import kokoro_lang
+        self.assertEqual(kokoro_lang("en", "af_heart"), "en-us")
+        self.assertEqual(kokoro_lang("en", "bf_emma"), "en-gb")
+        self.assertEqual(kokoro_lang("es", "ef_dora"), "es")
+        self.assertEqual(kokoro_lang("pt-BR", "pf_dora"), "pt-br")
+        self.assertEqual(kokoro_lang("fr", "ff_siwis"), "fr-fr")
+        with self.assertRaises(SystemExit):
+            kokoro_lang("ru", "af_heart")
+
+    def test_the_edition_names_the_language_and_engine(self):
+        from engine import check, language
+        self.assertEqual(language(CATALOG), "en")
+        self.assertEqual(check(CATALOG, "af_heart"), "en-us")
 
 
 if __name__ == "__main__":

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { CatalogBook } from '../data/book'
 import { COVERS } from '../data/covers'
+import { t } from '../locales'
 
 interface Props {
   book: CatalogBook
@@ -37,7 +38,7 @@ export function BookCover({ book, size = 'md' }: Props) {
       {src && (
         <img
           src={src}
-          alt={`${book.title} by ${book.author}`}
+          alt={t('cover.alt', { title: book.title, author: book.author })}
           loading="lazy"
           decoding="async"
           onError={() => setFailed(true)}

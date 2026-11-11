@@ -4,6 +4,7 @@ import { NavBar } from '../components/NavBar'
 import { BookCover } from '../components/BookCover'
 import { CATALOG } from '../data/catalog'
 import { readPath } from '../data/book'
+import { t } from '../locales'
 import { useAudioPlayer } from '../hooks/useAudioPlayer'
 import { booksInProgress, progressPercent, setFinished, useFinished } from '../hooks/useReadingProgress'
 import { ListenButton } from '../components/ListenButton'
@@ -29,7 +30,7 @@ export function LibraryPage() {
 
   return (
     <div className="min-h-dvh bg-page text-text">
-      <NavBar title="My books" />
+      <NavBar title={t('nav.myBooks')} />
 
       <main className="min-w-0 [overflow-wrap:anywhere] max-w-3xl mx-auto px-4 md:px-6 py-6 md:py-8">
         <InProgress />
@@ -56,10 +57,10 @@ function InProgress() {
 
   return (
     <section className="bg-surface rounded-xl border border-border p-5 md:p-6 mb-6">
-      <h2 className="text-lg font-display mb-3">In progress</h2>
+      <h2 className="text-lg font-display mb-3">{t('library.inProgress')}</h2>
       {books.length === 0 ? (
         <p className="text-sm text-text-muted">
-          Books you start reading or listening to show up here. <Link to="/" className="text-accent underline">Browse books</Link>
+          {t('library.inProgressEmpty')} <Link to="/" className="text-accent underline">{t('app.browseBooks')}</Link>
         </p>
       ) : (
         <div className="divide-y divide-border">
@@ -68,21 +69,21 @@ function InProgress() {
               <BookCover book={book} size="sm" />
               <div className="min-w-0 flex-1">
                 <div className="text-sm font-medium">{book.title}</div>
-                <div className="text-xs text-text-dim mt-0.5">{book.author} · Chapter {progress.chapterIdx + 1} of {book.chapters}</div>
+                <div className="text-xs text-text-dim mt-0.5">{book.author} · {t('chapter.of', { chapter: progress.chapterIdx + 1, chapters: book.chapters })}</div>
                 <div className="mt-1.5 h-1 max-w-48 bg-surface-hover rounded-full overflow-hidden">
                   <div className="h-full bg-accent rounded-full" style={{ width: `${progressPercent(progress)}%` }} />
                 </div>
                 <div className="text-xs text-text-dim mt-1">
-                  {Math.round(progress.read * 100)}% read
-                  {progress.listened !== null && ` · ${Math.round(progress.listened * 100)}% listened`}
+                  {t('library.read', { pct: Math.round(progress.read * 100) })}
+                  {progress.listened !== null && ` · ${t('library.listened', { pct: Math.round(progress.listened * 100) })}`}
                 </div>
                 <button onClick={() => setFinished(book.id, true)} className="min-h-10 text-xs text-text-muted hover:text-text transition">
-                  Mark as finished
+                  {t('progress.markFinished')}
                 </button>
               </div>
               <div className="col-span-2 min-w-0 flex flex-wrap items-center justify-end gap-2 md:shrink-0 md:flex-col md:items-end">
                 <Link to={readPath(book.id)} className="min-h-10 inline-flex items-center rounded-lg bg-accent px-4 py-1.5 text-xs font-semibold text-btn-text hover:bg-accent-hover transition">
-                  Resume
+                  {t('library.resume')}
                 </Link>
                 {playable && isNarrated(playable, book.id) && (
                   <ListenButton book={book} className="min-h-10 inline-flex items-center rounded-lg border border-border px-4 py-1.5 text-xs font-semibold text-text-muted hover:text-text transition" />
@@ -106,7 +107,7 @@ function Finished() {
 
   return (
     <section className="bg-surface rounded-xl border border-border p-5 md:p-6 mb-6">
-      <h2 className="text-lg font-display mb-3">Finished</h2>
+      <h2 className="text-lg font-display mb-3">{t('library.finished')}</h2>
       <div className="divide-y divide-border">
         {books.map(book => (
           <div key={book.id} className="py-3 flex flex-col items-stretch gap-2 md:flex-row md:items-center md:gap-3">
@@ -115,7 +116,7 @@ function Finished() {
               <div className="text-xs text-text-dim mt-0.5">{book.author}</div>
             </div>
             <button onClick={() => setFinished(book.id, false)} className="min-h-10 text-left md:shrink-0 text-xs text-text-muted hover:text-text transition">
-              Not finished
+              {t('library.notFinished')}
             </button>
           </div>
         ))}
@@ -140,14 +141,14 @@ function BookNotes() {
 
   return (
     <section className="bg-surface rounded-xl border border-border p-5 md:p-6 mb-6">
-      <h2 className="text-lg font-display mb-3">Bookmarks and notes</h2>
+      <h2 className="text-lg font-display mb-3">{t('notes.title')}</h2>
       <div className="divide-y divide-border">
         {books.map(book => (
           <details key={book.id} className="py-2 group">
             <summary className="cursor-pointer list-none flex items-center justify-between gap-3 py-1">
               <span className="min-w-0 flex-1">
                 <span className="block text-sm font-medium">{book.title}</span>
-                <span className="block text-xs text-text-dim">{all[book.id].length} saved</span>
+                <span className="block text-xs text-text-dim">{t('library.savedNotes', { count: all[book.id].length })}</span>
               </span>
               <span className="shrink-0 text-text-dim text-xs group-open:rotate-180 transition" aria-hidden="true">&#9662;</span>
             </summary>
@@ -162,7 +163,7 @@ function BookNotes() {
                 onClick={() => exportBook(book.id, book.title, book.author)}
                 className="mt-2 text-xs text-accent hover:underline"
               >
-                Export Markdown
+                {t('notes.export')}
               </button>
             </div>
           </details>
@@ -195,23 +196,24 @@ function SavedBooks() {
   return (
     <section className="bg-surface rounded-xl border border-border p-5 md:p-6 mb-6">
       <div className="flex flex-col items-stretch gap-2 md:flex-row md:items-start md:justify-between md:gap-3 mb-3">
-        <h2 className="text-lg font-display">Saved on this device</h2>
+        <h2 className="text-lg font-display">{t('library.saved')}</h2>
         {storage && Object.keys(saved).length > 0 && (
           <div className="min-w-0 text-xs text-text-dim md:max-w-[55%] md:text-right">
-            {formatBytes(storage.usage)} used{storage.quota > 0 && ` of ${formatBytes(storage.quota)}`}
-            <div>{storage.persisted ? 'Kept until you remove them' : 'Your browser may remove them if the device runs low on space'}</div>
+            {storage.quota > 0
+              ? t('library.usedOf', { used: formatBytes(storage.usage), quota: formatBytes(storage.quota) })
+              : t('library.used', { used: formatBytes(storage.usage) })}
+            <div>{t(storage.persisted ? 'library.persisted' : 'library.notPersisted')}</div>
           </div>
         )}
       </div>
       {iosSafariTab && (
         <p className="mb-3 rounded-lg bg-warning/10 px-3 py-2 text-xs text-warning">
-          Safari deletes saved books after about a week without opening this site. To keep them, add it to your
-          Home Screen (Share, then Add to Home Screen) and open it from there.
+          {t('library.iosSafari')}
         </p>
       )}
       {slugs.length === 0 ? (
         <p className="text-sm text-text-muted">
-          Open a book and tap "Save offline" to read and listen without a connection.
+          {t('library.savedEmpty')}
         </p>
       ) : (
         <div className="divide-y divide-border">
@@ -230,8 +232,8 @@ function SavedBooks() {
                   </Link>
                   <div className="text-xs text-text-dim mt-0.5">
                     {job
-                      ? `Saving… ${Math.round(job.progress * 100)}%`
-                      : book && `${formatBytes(savedBytes(book))} · ${book.voice ? `${audio}/${chapters} chapters with audio` : 'Text only'}`}
+                      ? t('library.saving', { pct: Math.round(job.progress * 100) })
+                      : book && `${formatBytes(savedBytes(book))} · ${book.voice ? t('library.withAudio', { audio, chapters }) : t('library.textOnly')}`}
                   </div>
                   {!job && errors[slug] && <div role="alert" className="text-xs text-danger mt-0.5">{errors[slug]}</div>}
                   {job && (
@@ -241,16 +243,16 @@ function SavedBooks() {
                   )}
                 </div>
                 {job ? (
-                  <button onClick={job.cancel} className="min-h-10 px-2 text-left text-xs text-text-muted hover:text-danger transition md:shrink-0">Cancel</button>
+                  <button onClick={job.cancel} className="min-h-10 px-2 text-left text-xs text-text-muted hover:text-danger transition md:shrink-0">{t('common.cancel')}</button>
                 ) : (
                   <div className="min-w-0 max-w-full flex flex-wrap items-center gap-1 md:shrink-0">
                     {reason && online && (
                       <button onClick={() => saveBook(slug, book.voice)} className="max-w-full min-h-10 px-2 text-left text-xs text-accent hover:underline">
-                        Update ({reason})
+                        {t('library.update', { reason })}
                       </button>
                     )}
                     {book && (
-                      <button onClick={() => removeSavedBook(slug)} className="min-h-10 px-2 text-xs text-text-muted hover:text-danger transition">Remove</button>
+                      <button onClick={() => removeSavedBook(slug)} className="min-h-10 px-2 text-xs text-text-muted hover:text-danger transition">{t('library.remove')}</button>
                     )}
                   </div>
                 )}

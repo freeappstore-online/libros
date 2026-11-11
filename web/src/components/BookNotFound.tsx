@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { pwa } from '../fas-capabilities/pwa'
 import { useOfflineBooks } from '../hooks/offlineBooks'
 import { newerVersionWaiting, reloadWithAppUpdate } from '../hooks/appUpdate'
+import { t } from '../locales'
 
 /**
  * A slug this build doesn't know may be a book added in a newer version that a
@@ -37,11 +38,11 @@ export function BookNotFound() {
   return (
     <div className="min-h-dvh bg-page text-text flex items-center justify-center">
       {checking ? (
-        <p role="status" className="text-text-muted">Loading...</p>
+        <p role="status" className="text-text-muted">{t('app.loading')}</p>
       ) : (
         <div className="text-center space-y-4">
-          <p className="text-xl text-text-muted">Book not found</p>
-          <Link to="/" className="text-accent hover:underline">Browse books</Link>
+          <p className="text-xl text-text-muted">{t('app.bookNotFound')}</p>
+          <Link to="/" className="text-accent hover:underline">{t('app.browseBooks')}</Link>
         </div>
       )}
     </div>

@@ -16,7 +16,7 @@
     "description": "Miserly Ebenezer Scrooge is visited by three ghosts who show him the error of his ways.",
     "excerpt": "Marley was dead: to begin with. There is no doubt whatever about that...",
     "chapters": 6,
-    "readTime": "2h",
+    "readMinutes": 120,
     "coverGradient": "from-green-800 to-emerald-950",
     "coverAccent": "#16A34A",
     "contentPath": "/catalog/a-christmas-carol.json"
@@ -39,7 +39,7 @@
     "description": "A 19th-century American engineer is transported to Arthurian England, where he attempts to modernize the medieval world with hilarious and devastating results.",
     "excerpt": "It was in Warwick Castle that I came across the curious stranger.",
     "chapters": 47,
-    "readTime": "7h 45min",
+    "readMinutes": 465,
     "coverGradient": "from-violet-900 to-purple-950",
     "coverAccent": "#6D28D9",
     "contentPath": "/catalog/a-connecticut-yankee.json"
@@ -62,7 +62,7 @@
     "description": "Pampered Sara Crewe is reduced to a servant in her London boarding school when her father dies, and keeps her spirit alive by imagining she is a princess.",
     "excerpt": "Once on a dark winter's day, when the yellow fog hung so thick and heavy in the streets of London that the lamps were...",
     "chapters": 19,
-    "readTime": "4h 30min",
+    "readMinutes": 270,
     "coverGradient": "from-rose-900 to-pink-950",
     "coverAccent": "#FB7185",
     "contentPath": "/catalog/a-little-princess.json"
@@ -84,7 +84,7 @@
     "description": "A young girl falls through a rabbit hole into a fantastical underground world filled with peculiar creatures and absurd situations.",
     "excerpt": "Alice was beginning to get very tired of sitting by her sister on the bank, and of having nothing to do...",
     "chapters": 12,
-    "readTime": "1h 45min",
+    "readMinutes": 105,
     "coverGradient": "from-violet-900 to-indigo-950",
     "coverAccent": "#A78BFA",
     "contentPath": "/catalog/alice-in-wonderland.json"
@@ -107,7 +107,7 @@
     "description": "A poor Mississippi family hauls their mother's coffin across the countryside to bury her in her hometown, each family member narrating their darkly comic journey.",
     "excerpt": "Jewel and I come up from the field, following the path in single file.",
     "chapters": 59,
-    "readTime": "3h 45min",
+    "readMinutes": 225,
     "coverGradient": "from-yellow-900 to-amber-950",
     "coverAccent": "#CA8A04",
     "contentPath": "/catalog/as-i-lay-dying.json",
@@ -131,7 +131,7 @@
     "description": "Count Dracula moves from Transylvania to England to spread the undead curse, pursued by a determined group of heroes.",
     "excerpt": "Left Munich at 8:35 P.M., on 1st May, arriving at Vienna early next morning; should have arrived at 6:46, but train was an hour late...",
     "chapters": 27,
-    "readTime": "10h 45min",
+    "readMinutes": 645,
     "coverGradient": "from-red-950 to-black",
     "coverAccent": "#991B1B",
     "contentPath": "/catalog/dracula.json"
@@ -154,7 +154,7 @@
     "description": "An ex-convict seeks redemption in post-revolutionary France while pursued by a relentless inspector.",
     "excerpt": "In 1815, M. Charles-François-Bienvenu Myriel was Bishop of Digne...",
     "chapters": 365,
-    "readTime": "37h 15min",
+    "readMinutes": 2235,
     "coverGradient": "from-blue-800 to-indigo-950",
     "coverAccent": "#2563EB",
     "contentPath": "/catalog/les-miserables.json"
@@ -177,7 +177,7 @@
     "description": "A kaleidoscopic portrait of New York City in the early 20th century, following dozens of characters through the chaos, ambition, and heartbreak of the metropolis.",
     "excerpt": "Three gulls wheel above the broken boxes, orange rinds, spoiled cabbage heads that heave between the splintered plank walls.",
     "chapters": 18,
-    "readTime": "8h 30min",
+    "readMinutes": 510,
     "coverGradient": "from-sky-900 to-blue-950",
     "coverAccent": "#0284C7",
     "contentPath": "/catalog/manhattan-transfer.json"
@@ -200,7 +200,7 @@
     "description": "A formerly enslaved man tells his own story of bondage, brutality, and escape, becoming one of the most powerful arguments against slavery ever written.",
     "excerpt": "I was born in Tuckahoe, near Hillsborough, and about twelve miles from Easton, in Talbot county, Maryland.",
     "chapters": 14,
-    "readTime": "2h 45min",
+    "readMinutes": 165,
     "coverGradient": "from-stone-900 to-neutral-950",
     "coverAccent": "#57534E",
     "contentPath": "/catalog/narrative-of-frederick-douglass.json"
@@ -223,7 +223,7 @@
     "description": "Milton's epic of Satan's rebellion and fall, and of the temptation of Adam and Eve and their expulsion from Eden.",
     "excerpt": "Of Man’s first disobedience, and the fruit Of that forbidden tree whose mortal taste Brought death into the World, and...",
     "chapters": 12,
-    "readTime": "5h 15min",
+    "readMinutes": 315,
     "coverGradient": "from-red-900 to-stone-950",
     "coverAccent": "#F87171",
     "contentPath": "/catalog/paradise-lost.json"
@@ -245,7 +245,7 @@
     "description": "The turbulent relationship between Elizabeth Bennet and Fitzwilliam Darcy as they overcome their pride and prejudice.",
     "excerpt": "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife...",
     "chapters": 61,
-    "readTime": "8h",
+    "readMinutes": 480,
     "coverGradient": "from-rose-900 to-pink-950",
     "coverAccent": "#FB7185",
     "contentPath": "/catalog/pride-and-prejudice.json"
@@ -268,7 +268,7 @@
     "description": "Two Englishmen follow an ancient potsherd into the heart of Africa and find Ayesha, an immortal queen who has waited centuries for love.",
     "excerpt": "There are some events of which each circumstance and surrounding detail seems to be graven on the memory in such...",
     "chapters": 29,
-    "readTime": "7h 15min",
+    "readMinutes": 435,
     "coverGradient": "from-yellow-900 to-amber-950",
     "coverAccent": "#FACC15",
     "contentPath": "/catalog/she.json"
@@ -291,7 +291,7 @@
     "description": "Mole, Rat, Badger, and the irrepressible Mr. Toad share adventures along the English riverbank in a timeless tale of friendship and home.",
     "excerpt": "The Mole had been working very hard all the morning, spring-cleaning his little home.",
     "chapters": 12,
-    "readTime": "4h",
+    "readMinutes": 240,
     "coverGradient": "from-teal-900 to-green-950",
     "coverAccent": "#0D9488",
     "contentPath": "/catalog/the-wind-in-the-willows.json"

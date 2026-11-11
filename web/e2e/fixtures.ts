@@ -57,7 +57,7 @@ function sentenceRanges(text: string): [number, number][] {
     if (start < end) r.push([start, end])
     start = end
   }
-  for (const m of text.matchAll(/[.!?]+["'”’)\]]*(?=\s)|\n/g)) push(m.index + m[0].length)
+  for (const m of text.matchAll(/[.!?…]+["'”’»)\]]*(?=\s)(?![^\S\n]+(?:[—–-]+[^\S\n]?)?\p{Ll})|\n/gu)) push(m.index + m[0].length)
   push(text.length)
   return r
 }

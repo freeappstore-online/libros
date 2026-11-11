@@ -24,6 +24,8 @@ TEXT_DIR = os.path.join(EDITION, "texts")
 APP_DATA = os.path.join(EDITION, "books.json")
 WORDS_PER_MIN = 250
 
+# The app's genre filter: fixed keys, labelled in each language by the app's locale (books#54)
+GENRES = ("Fiction", "Non-Fiction", "Drama", "Poetry")
 REQUIRED = {"title": str, "author": str, "author_bio": str, "year": int, "genre": str, "tags": list,
             "language": str, "description": str, "excerpt": str, "look": dict, "source": dict}
 OPTIONAL = {"cover": dict, "narration_revision": str}
@@ -43,6 +45,8 @@ def _validate(slug: str, book: dict):
         bad(f"missing {', '.join(missing)}")
     if unknown := set(book) - set(REQUIRED) - set(OPTIONAL):
         bad(f"unknown key(s) {', '.join(sorted(unknown))}")
+    if book["genre"] not in GENRES:
+        bad(f"genre must be one of {', '.join(GENRES)}")
     if set(book["look"]) != {"gradient", "accent"}:
         bad("[look] needs exactly gradient and accent")
     if "narration_revision" in book and not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", book["narration_revision"]):
@@ -99,12 +103,9 @@ def source(book: dict):
     return (tuple(ids) if isinstance(ids, list) else ids), opts
 
 
-def read_time(words: int) -> str:
-    minutes = words / WORDS_PER_MIN
-    if minutes < 60:
-        return f"{max(15, round(minutes / 15) * 15)}min"
-    h, m = divmod(round(minutes / 15) * 15, 60)
-    return f"{h}h {m}min" if m else f"{h}h"
+def read_time(words: int) -> int:
+    """Reading time in minutes, to the quarter hour (at least 15). The app writes it in its language (books#54)."""
+    return max(15, round(words / WORDS_PER_MIN / 15) * 15)
 
 
 def app_data() -> list[dict]:
@@ -117,7 +118,7 @@ def app_data() -> list[dict]:
         out.append({"id": slug, "title": b["title"], "author": b["author"], "authorBio": b["author_bio"],
                     "year": b["year"], "genre": b["genre"], "tags": b["tags"], "language": b["language"],
                     "description": b["description"], "excerpt": b["excerpt"], "chapters": len(chapters),
-                    "readTime": read_time(words), "coverGradient": b["look"]["gradient"],
+                    "readMinutes": read_time(words), "coverGradient": b["look"]["gradient"],
                     "coverAccent": b["look"]["accent"], "contentPath": f"/catalog/{slug}.json",
                     **({"narrationRevision": b["narration_revision"]} if b.get("narration_revision") else {})})
     return out

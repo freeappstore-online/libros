@@ -23,8 +23,9 @@ and `gh`. The book file's format, and every split option, is documented in
 ### 1. Pick the text
 
 - Use Project Gutenberg plain text (`https://www.gutenberg.org/ebooks/<id>`). Check that its type is
-  *Text*, not *Sound*, and that it is English. Pre-generated narration is English only: `generate.py`
-  uses `en-gb` for `b*` voices and `en-us` for the rest.
+  *Text*, not *Sound*, and that it is in the edition's language (`language` in
+  `edition/config.json`). Narration speaks that language (`scripts/audio/engine.py`): English as
+  `en-gb` for `b*` voices and `en-us` for the rest.
 - The rights bar is **public domain in the US**, the basis Gutenberg publishes under. If the author died
   after 1955, the book is still in copyright in Australia and other life+70 countries. Say so in the
   issue.
@@ -161,10 +162,26 @@ narrated: the owner decided on 2026-11-10 to perfect one book before starting ot
 ```bash
 gh workflow run generate-audio.yml -R freeappstore-online/books \
   -f books="north-and-south villette"     # space-separated slugs, required; there is no "every book" mode
-  # -f voice=af_heart                      # Kokoro voice id; af_heart is the default
+  # -f voice=af_heart                      # Kokoro voice id; the edition's (audio.voice) by default
   # -f force=true                          # narrate these books again even where audio exists
 gh run watch -R freeappstore-online/books  # or the Actions tab
 ```
+
+### The edition's voice
+
+Each app narrates with the engine, voice and dataset in its `edition/config.json` (`audio`).
+
+- **Language:** the engine speaks the edition's `language`, never one guessed from the voice id.
+- **Kokoro's languages:** English, Spanish, French, Italian, Brazilian Portuguese, Hindi, Japanese
+  and Mandarin.
+- **Other languages:** a run for an edition in a language Kokoro can't speak stops before any job
+  starts. Russian and German need books#64.
+- **Choosing a voice:**
+  1. Listen to two minutes of a chapter in each candidate voice.
+  2. The owner picks the voice.
+  3. Set `audio.voice`.
+
+  Before each batch, listen to a book with dialogue, numbers and Roman numerals.
 
 The workflow runs three jobs:
 

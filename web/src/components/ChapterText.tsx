@@ -1,6 +1,7 @@
 import { Fragment, memo, useEffect, useMemo, useRef, useState, type CSSProperties, type MouseEvent, type ReactNode } from 'react'
 import { useReadAlong } from '../hooks/useAudioPlayer'
 import type { CharRange } from '../hooks/readAlong'
+import { t } from '../locales'
 
 // Room kept clear above and below the spoken line, the latter above the fixed player bar
 const TOP_MARGIN = 48
@@ -222,10 +223,10 @@ export function ChapterText({ content, chapterIdx, active, className, style, tit
           onClick={() => setFollowing(true)}
           data-shortcut="follow"
           aria-keyshortcuts="F"
-          title="Follow audio (F)"
+          title={t('reader.followKeys')}
           className="fixed right-4 bottom-[calc(var(--player-h,0px)+1rem)] z-40 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-btn-text shadow-lg hover:bg-accent-hover transition"
         >
-          Follow audio
+          {t('reader.follow')}
         </button>
       )}
     </>

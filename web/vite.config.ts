@@ -10,6 +10,7 @@ import type { CatalogBook } from './src/data/book'
 import type { EditionConfig } from './src/data/edition'
 import { datasetBase, narratedCount, parseManifestFor } from './src/hooks/manifest'
 import { bookPage, openingParagraphs, sitemap } from './src/seo/bookPages'
+import { makeLocale, type Messages } from './src/locales/locale'
 
 // This app's edition: its config, books, texts and covers (docs/editions.md). BOOKS_EDITION points
 // the build at another one. The config reads it from disk: app code reaches it as @edition/*.
@@ -18,6 +19,10 @@ const readJson = <T>(file: string): T => JSON.parse(readFileSync(join(editionDir
 const EDITION = readJson<EditionConfig>('config.json')
 const CATALOG = readJson<CatalogBook[]>('books.json')
 const COVERS = new Set(readJson<string[]>('covers.json'))
+// The interface language is the edition's (books#54): the static pages are written in it too
+const localeFile = fileURLToPath(new URL(`./src/locales/${EDITION.language}.json`, import.meta.url))
+if (!existsSync(localeFile)) throw new Error(`No locale for the edition's language ${EDITION.language}: add src/locales/${EDITION.language}.json`)
+const LOCALE = makeLocale(JSON.parse(readFileSync(localeFile, 'utf8')) as Messages, EDITION.language)
 
 // Book covers (/covers/*.webp) stay out of the precache; they are cached as they are shown.
 // maxEntries is above the catalogue size so a cover fetched for an offline book is never evicted.
@@ -40,7 +45,8 @@ function webManifest(): string {
 }
 
 /**
- * The edition in the app: its strings in index.html, its PWA manifest, and its texts and covers
+ * The edition in the app: its strings and its locale's in index.html ({{edition.title}},
+ * {{locale.meta.ogLocale}}), its PWA manifest, and its texts and covers
  * served at /catalog/ and /covers/ (the URLs saved books and narration positions are keyed by),
  * and its own files at the site root (edition/public/).
  */
@@ -55,11 +61,13 @@ function edition(): Plugin {
     config: () => ({ resolve: { alias: { '@edition': editionDir } } }),
     transformIndexHtml: {
       order: 'pre',
-      handler: html => html.replace(/\{\{edition\.(\w+)\}\}/g, (_, key: string) => {
-        const value = EDITION[key as keyof EditionConfig]
-        if (typeof value !== 'string') throw new Error(`index.html: no string ${key} in edition/config.json`)
-        return escapeHtml(value)
-      }),
+      handler: html => html
+        .replace(/\{\{edition\.(\w+)\}\}/g, (_, key: string) => {
+          const value = EDITION[key as keyof EditionConfig]
+          if (typeof value !== 'string') throw new Error(`index.html: no string ${key} in edition/config.json`)
+          return escapeHtml(value)
+        })
+        .replace(/\{\{locale\.([\w.]+)\}\}/g, (_, key: string) => escapeHtml(LOCALE.t(key as keyof Messages))),
     },
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
@@ -108,7 +116,7 @@ function bookPages(): Plugin {
             opening: openingParagraphs(chapters[0].content),
             narrated: narratedCount(manifest, book.id, EDITION.audio.voice),
             hasCover: COVERS.has(book.id),
-          }, EDITION),
+          }, EDITION, LOCALE),
         })
       }
       this.emitFile({ type: 'asset', fileName: 'sitemap.xml', source: sitemap(CATALOG.map(b => b.id), EDITION.site) })

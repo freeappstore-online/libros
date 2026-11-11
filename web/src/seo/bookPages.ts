@@ -4,8 +4,9 @@
  * page is the built index.html with the book's metadata and content in #root,
  * which the app replaces when it starts.
  */
-import { formatYear, readPath, type CatalogBook } from '../data/book'
+import { readPath, type CatalogBook } from '../data/book'
 import type { EditionConfig } from '../data/edition'
+import type { Locale } from '../locales/locale'
 
 /** What a page takes from the edition (edition/config.json) */
 export type PageEdition = Pick<EditionConfig, 'site' | 'name' | 'language'>
@@ -47,18 +48,19 @@ function setMeta(html: string, attribute: 'name' | 'property', key: string, valu
   return replaceOnce(html, new RegExp(`<meta ${attribute}="${key}" content="[^"]*"\\s*/?>`), `<meta ${attribute}="${key}" content="${escapeHtml(value)}" />`)
 }
 
-function audioNote(narrated: number, chapters: number): string {
+function audioNote({ t }: Locale, narrated: number, chapters: number): string {
   if (narrated === 0) return ''
-  return narrated >= chapters
-    ? 'Audiobook: every chapter is narrated, with the text following along as you listen.'
-    : `Audiobook: ${narrated} of ${chapters} chapters are narrated, with the text following along as you listen.`
+  return narrated >= chapters ? t('seo.audioAll') : t('seo.audioSome', { narrated, count: chapters })
 }
 
-export function bookPage(shell: string, book: CatalogBook, content: BookPageContent, edition: PageEdition): string {
+/** The page of `book`, in the edition's language: `locale` is its locale (the build config passes it in). */
+export function bookPage(shell: string, book: CatalogBook, content: BookPageContent, edition: PageEdition, locale: Locale): string {
+  const { t } = locale
   const url = edition.site + readPath(book.id)
   const listen = content.narrated > 0
-  const title = `${book.title} by ${book.author}: ${listen ? 'Read & Listen' : 'Read'} Free Online | ${edition.name}`
-  const description = `Read ${book.title} by ${book.author} free online${listen ? ', or listen to the audiobook' : ''}. ${book.description}`
+  const names = { title: book.title, author: book.author, name: edition.name, description: book.description }
+  const title = t(listen ? 'seo.titleListen' : 'seo.titleRead', names)
+  const description = t(listen ? 'seo.descriptionListen' : 'seo.descriptionRead', names)
   const image = content.hasCover ? `${edition.site}/covers/${book.id}.webp` : undefined
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -66,7 +68,7 @@ export function bookPage(shell: string, book: CatalogBook, content: BookPageCont
     name: book.title,
     author: { '@type': 'Person', name: book.author },
     ...(book.year > 0 && { datePublished: String(book.year) }),
-    genre: book.genre,
+    genre: locale.genre(book.genre),
     keywords: book.tags.join(', '),
     description: book.description,
     inLanguage: edition.language,
@@ -91,30 +93,30 @@ export function bookPage(shell: string, book: CatalogBook, content: BookPageCont
     '</head>',
   ].filter(Boolean).join('\n'))
 
-  const note = audioNote(content.narrated, book.chapters)
+  const note = audioNote(locale, content.narrated, book.chapters)
   const main = `<main class="min-h-dvh bg-page text-text">
 <article class="max-w-2xl mx-auto px-5 py-10 space-y-6">
 <header class="space-y-2">
 <h1 class="text-3xl font-bold">${escapeHtml(book.title)}</h1>
-<p class="text-text-muted">${escapeHtml(book.author)} &middot; ${formatYear(book.year)} &middot; ${escapeHtml(book.genre)} &middot; ${book.chapters} chapters &middot; ${escapeHtml(book.readTime)}</p>
+<p class="text-text-muted">${[book.author, locale.year(book.year), locale.genre(book.genre), t('seo.chapters', { count: book.chapters }), locale.readTime(book.readMinutes)].map(escapeHtml).join(' &middot; ')}</p>
 </header>
 <p>${escapeHtml(book.description)}</p>
-${note ? `<p>${note}</p>\n` : ''}<p><a href="${readPath(book.id)}" class="text-accent">${listen ? 'Read or listen' : 'Read'} free, no account needed</a></p>
+${note ? `<p>${escapeHtml(note)}</p>\n` : ''}<p><a href="${readPath(book.id)}" class="text-accent">${escapeHtml(t(listen ? 'seo.ctaListen' : 'seo.ctaRead'))}</a></p>
 <section class="space-y-3">
-<h2 class="text-xl font-semibold">The opening</h2>
+<h2 class="text-xl font-semibold">${escapeHtml(t('seo.opening'))}</h2>
 ${content.opening.map(p => `<p>${escapeHtml(p)}</p>`).join('\n')}
 </section>
 <section class="space-y-2">
-<h2 class="text-xl font-semibold">Chapters</h2>
+<h2 class="text-xl font-semibold">${escapeHtml(t('chapters.title'))}</h2>
 <ol class="list-decimal pl-6 text-text-muted">
 ${content.chapterTitles.map(t => `<li>${escapeHtml(t)}</li>`).join('\n')}
 </ol>
 </section>
 <section class="space-y-2">
-<h2 class="text-xl font-semibold">About ${escapeHtml(book.author)}</h2>
+<h2 class="text-xl font-semibold">${escapeHtml(t('seo.about', { author: book.author }))}</h2>
 <p>${escapeHtml(book.authorBio)}</p>
 </section>
-<p><a href="/" class="text-accent">Browse all books</a></p>
+<p><a href="/" class="text-accent">${escapeHtml(t('seo.browse'))}</a></p>
 </article>
 </main>`
   return replaceOnce(html, /<div id="root"><\/div>/, `<div id="root">${main}</div>`)

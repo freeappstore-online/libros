@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { RATES, type SleepChoice, type SleepTimer } from '../hooks/useAudioPlayer'
 import { loadSleepChoice } from '../hooks/audioStorage'
+import { t } from '../locales'
 
 /** The player bar's speed and sleep timer buttons, each with its popover menu. */
 
@@ -32,17 +33,17 @@ export function SpeedButton({ rate, setRate }: { rate: number; setRate: (r: numb
         onPointerLeave={() => clearTimeout(pressTimer.current)}
         onContextMenu={e => { e.preventDefault(); setMenuOpen(true) }}
         className="min-w-[40px] sm:min-w-11 h-[40px] px-1 sm:px-1.5 text-xs font-semibold tabular-nums text-text-muted hover:text-text transition select-none [-webkit-touch-callout:none]"
-        title="Speed (hold for all speeds; [ and ] step it)"
-        aria-label={`Speed ${rate}x`}
+        title={t('player.speedTitle')}
+        aria-label={`${t('listening.speed')} ${t('player.rate', { rate })}`}
         aria-keyshortcuts="[ ]"
       >
-        {rate}x
+        {t('player.rate', { rate })}
       </button>
       {menuOpen && (
-        <BarMenu label="Speed" onClose={close}>
+        <BarMenu label={t('listening.speed')} onClose={close}>
           {RATES.map(r => (
             <MenuItem key={r} checked={r === rate} onClick={() => { setRate(r); close() }}>
-              {r}x
+              {t('player.rate', { rate: r })}
             </MenuItem>
           ))}
         </BarMenu>
@@ -53,7 +54,7 @@ export function SpeedButton({ rate, setRate }: { rate: number; setRate: (r: numb
 
 const SLEEP_CHOICES: SleepChoice[] = [5, 15, 30, 45, 60, 'chapter']
 
-const sleepLabel = (c: SleepChoice) => c === 'chapter' ? 'End of chapter' : `${c} minutes`
+const sleepLabel = (c: SleepChoice) => c === 'chapter' ? t('sleep.endOfChapter') : t('sleep.minutes', { count: c })
 
 /** Moon button: picks a sleep timer, then shows its countdown; tapping that cancels or extends it. */
 export function SleepButton({ timer, start, extend, cancel }: {
@@ -75,21 +76,23 @@ export function SleepButton({ timer, start, extend, cancel }: {
         aria-haspopup="menu"
         aria-expanded={menuOpen}
         className={`flex items-center justify-center gap-1 min-w-[40px] h-[40px] px-2 text-xs font-semibold tabular-nums transition ${timer ? 'text-accent' : 'text-text-muted hover:text-text'}`}
-        title="Sleep timer"
-        aria-label={timer ? `Sleep timer: ${timer.choice === 'chapter' ? 'end of chapter' : formatTime(timer.remaining / 1000)}` : 'Sleep timer'}
+        title={t('sleep.title')}
+        aria-label={timer
+          ? t('sleep.set', { until: timer.choice === 'chapter' ? t('sleep.endOfChapterLower') : formatTime(timer.remaining / 1000) })
+          : t('sleep.title')}
       >
         <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.3 2a10 10 0 1 0 9.7 12.6A8 8 0 0 1 12.3 2z"/></svg>
-        {timer && <span>{timer.choice === 'chapter' ? 'Ch' : formatTime(timer.remaining / 1000)}</span>}
+        {timer && <span>{timer.choice === 'chapter' ? t('sleep.chapterShort') : formatTime(timer.remaining / 1000)}</span>}
       </button>
       {menuOpen && (
-        <BarMenu label="Sleep timer" onClose={close}>
+        <BarMenu label={t('sleep.title')} onClose={close}>
           {timer && timer.choice !== 'chapter' && (
             <>
-              <MenuItem onClick={() => { extend(5); close() }}>+5 minutes</MenuItem>
-              <MenuItem onClick={() => { extend(15); close() }}>+15 minutes</MenuItem>
+              <MenuItem onClick={() => { extend(5); close() }}>{t('sleep.extend', { count: 5 })}</MenuItem>
+              <MenuItem onClick={() => { extend(15); close() }}>{t('sleep.extend', { count: 15 })}</MenuItem>
             </>
           )}
-          {timer && <MenuItem onClick={() => { cancel(); close() }}>Turn off timer</MenuItem>}
+          {timer && <MenuItem onClick={() => { cancel(); close() }}>{t('sleep.off')}</MenuItem>}
           {timer && <div role="separator" className="my-1 border-t border-border" />}
           {SLEEP_CHOICES.map(c => (
             <MenuItem key={c} checked={timer ? timer.choice === c : last === c} onClick={() => { start(c); close() }}>

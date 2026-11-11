@@ -34,10 +34,10 @@ class Helpers(unittest.TestCase):
         self.assertEqual(titlecase("Already Mixed case", EN), "Already Mixed case")
 
     def test_read_time(self):
-        self.assertEqual(read_time(100), "15min")
-        self.assertEqual(read_time(250 * 50), "45min")
-        self.assertEqual(read_time(250 * 90), "1h 30min")
-        self.assertEqual(read_time(250 * 120), "2h")
+        self.assertEqual(read_time(100), 15)
+        self.assertEqual(read_time(250 * 50), 45)
+        self.assertEqual(read_time(250 * 90), 90)
+        self.assertEqual(read_time(250 * 120), 120)
 
 
 class Verse(unittest.TestCase):
@@ -255,6 +255,7 @@ class BookFiles(unittest.TestCase):
     def test_mistakes_are_named(self):
         for change, message in [({"year": "1900"}, "year must be a int"),
                                 ({"subtitle": "S"}, "unknown key(s) subtitle"),
+                                ({"genre": "Novel"}, "genre must be one of Fiction, Non-Fiction, Drama, Poetry"),
                                 ({"source": {"gutenberg": 1, "strat": "X"}}, "unknown [source] option(s) strat"),
                                 ({"source": {"gutenberg": 1, "none": "kept"}}, "exactly one of"),
                                 ({"cover": {"commons": "F.jpg", "none": "why"}}, "[cover] holds"),

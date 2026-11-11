@@ -1,22 +1,25 @@
 import { useEffect, useRef } from 'react'
 import { useAudioPlayer, RATES } from '../hooks/useAudioPlayer'
+import { t } from '../locales'
 
 /**
  * App-wide keyboard shortcuts (books#15) and the "?" help listing them.
  * Pages opt controls in with data-shortcut: "play" (starts listening when nothing is
  * loaded yet), "follow" (Follow audio) and "search" (the page's search field, for "/").
  */
+const SPACE = t('keys.space')
+const SHIFT = t('keys.shift')
 const SHORTCUTS: [string[], string][] = [
-  [['Space', 'K'], 'Play or pause'],
-  [['←'], 'Back 15 seconds'],
-  [['→'], 'Forward 30 seconds'],
-  [['Shift', '←'], 'Previous chapter'],
-  [['Shift', '→'], 'Next chapter'],
-  [['['], 'Slower'],
-  [[']'], 'Faster'],
-  [['F'], 'Follow the audio in the text'],
-  [['/'], 'Search'],
-  [['?'], 'Show these shortcuts'],
+  [[SPACE, 'K'], t('shortcuts.playPause')],
+  [['←'], t('player.back')],
+  [['→'], t('player.forward')],
+  [[SHIFT, '←'], t('player.previousChapter')],
+  [[SHIFT, '→'], t('player.nextChapter')],
+  [['['], t('shortcuts.slower')],
+  [[']'], t('shortcuts.faster')],
+  [['F'], t('shortcuts.follow')],
+  [['/'], t('shortcuts.search')],
+  [['?'], t('shortcuts.help')],
 ]
 
 /** Elements whose keys are their own, not shortcuts (also for the reader's "/"). */
@@ -95,12 +98,12 @@ export function KeyboardShortcuts() {
       onKeyDown={e => { if (e.key === 'Tab') e.preventDefault() }}
     >
       <div className="flex items-center justify-between gap-3 mb-3">
-        <h2 id="shortcuts-title" className="text-lg font-display">Keyboard shortcuts</h2>
+        <h2 id="shortcuts-title" className="text-lg font-display">{t('shortcuts.title')}</h2>
         <button
           onClick={() => dialogRef.current?.close()}
           className="rounded-lg px-2 py-1 text-sm text-text-muted hover:bg-surface-hover hover:text-text transition"
         >
-          Close
+          {t('common.close')}
         </button>
       </div>
       <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
@@ -109,7 +112,7 @@ export function KeyboardShortcuts() {
             <dt className="whitespace-nowrap">
               {keys.map((k, i) => (
                 <span key={k}>
-                  {i > 0 && <span className="text-text-muted">{keys[0] === 'Shift' ? ' + ' : ' or '}</span>}
+                  {i > 0 && <span className="text-text-muted">{keys[0] === SHIFT ? ' + ' : ` ${t('shortcuts.or')} `}</span>}
                   <kbd className="rounded border border-border bg-page px-1.5 py-0.5 font-code text-xs">{k}</kbd>
                 </span>
               ))}

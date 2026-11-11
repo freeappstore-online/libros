@@ -4,13 +4,14 @@ import { readLocalRecord, writeLocal } from './localStorage'
  * Offsets are chapter text offsets, like the read-along and the search.
  */
 import { useSyncExternalStore } from 'react'
+import { t } from '../locales'
 
 const KEY = 'bp-annotations'
 
 export const HIGHLIGHT_COLORS = {
-  yellow: { label: 'Yellow', className: 'bg-yellow-300/50' },
-  green: { label: 'Green', className: 'bg-green-300/50' },
-  pink: { label: 'Pink', className: 'bg-pink-300/50' },
+  yellow: { className: 'bg-yellow-300/50' },
+  green: { className: 'bg-green-300/50' },
+  pink: { className: 'bg-pink-300/50' },
 } as const
 export type HighlightColor = keyof typeof HIGHLIGHT_COLORS
 
@@ -121,16 +122,16 @@ export function formatSeconds(s: number): string {
 
 /** The book's bookmarks, highlights and notes as Markdown. */
 export function annotationsMarkdown(title: string, author: string, chapterTitles: string[], list: Annotation[]): string {
-  const lines = [`# ${title}`, '', `*${author}* · bookmarks, highlights and notes`, '']
+  const lines = [`# ${title}`, '', `*${author}* · ${t('markdown.subtitle')}`, '']
   let chapter = -1
   for (const a of sortAnnotations(list)) {
     if (a.chapterIdx !== chapter) {
       chapter = a.chapterIdx
-      lines.push(`## ${chapterTitles[chapter] ?? `Chapter ${chapter + 1}`}`, '')
+      lines.push(`## ${chapterTitles[chapter] ?? t('chapter.full', { chapter: chapter + 1 })}`, '')
     }
     const text = a.text.replace(/\s+/g, ' ').trim()
     if (a.kind === 'bookmark') {
-      lines.push(`- Bookmark${a.seconds !== undefined ? ` (${formatSeconds(a.seconds)} into the narration)` : ''}: ${text}`)
+      lines.push(`- ${a.seconds !== undefined ? t('markdown.bookmarkAt', { time: formatSeconds(a.seconds) }) : t('markdown.bookmark')}: ${text}`)
       if (a.note) lines.push(`  ${a.note.replace(/\n/g, '\n  ')}`)
     } else {
       lines.push(`> ${text}`)

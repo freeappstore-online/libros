@@ -2,14 +2,15 @@ import { useAudioPlayer } from '../hooks/useAudioPlayer'
 import { getNarrationTime, useNarrationPosition } from '../hooks/narration'
 import { chapterSeconds, isNarrated, preparedUrl, usePreparedManifest } from '../hooks/preparedAudio'
 import { remainingTime } from '../hooks/remainingTime'
+import { LOCALE, t } from '../locales'
 
 function formatDuration(seconds: number): string {
   const minutes = Math.round(seconds / 60)
-  if (minutes < 1) return 'under a minute'
-  if (minutes < 60) return `${minutes} min`
+  if (minutes < 1) return t('duration.underMinute')
+  if (minutes < 60) return t('duration.minutes', { m: minutes })
   const h = Math.floor(minutes / 60)
   const m = minutes % 60
-  return m ? `${h} h ${m} min` : `${h} h`
+  return m ? t('duration.hoursMinutes', { h, m }) : t('duration.hours', { h })
 }
 
 interface Props {
@@ -40,13 +41,16 @@ export function TimeLeft({ slug, chapters, chapterIdx, scroll }: Props) {
     <p
       className="text-xs text-text-dim mb-4 md:mb-6"
     >
-      <span className="block" title="Estimated reading time">
-        Reading: {formatDuration(times.readingChapter)} left in chapter
-        {chapters.length > 1 && <> · {formatDuration(times.readingBook)} left in book</>}
+      <span className="block" title={t('timeLeft.estimate')}>
+        {t('timeLeft.reading', { left: t('timeLeft.chapter', { time: formatDuration(times.readingChapter) }) })}
+        {chapters.length > 1 && <> · {t('timeLeft.book', { time: formatDuration(times.readingBook) })}</>}
       </span>
       {narrated && <span className="block">
-        Listening at {player.rate}×: {times.audioChapter === null ? 'no audio for this chapter' : `${formatDuration(times.audioChapter)} left in chapter`}
-        {chapters.length > 1 && <> · {formatDuration(times.audioBook)} {times.partial ? 'available audio left' : 'left in book'}</>}
+        {t('timeLeft.listening', {
+          rate: LOCALE.number(player.rate),
+          left: times.audioChapter === null ? t('timeLeft.noAudio') : t('timeLeft.chapter', { time: formatDuration(times.audioChapter) }),
+        })}
+        {chapters.length > 1 && <> · {t(times.partial ? 'timeLeft.audioAvailable' : 'timeLeft.book', { time: formatDuration(times.audioBook) })}</>}
       </span>}
     </p>
   )

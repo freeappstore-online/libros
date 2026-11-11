@@ -5,23 +5,24 @@ import {
   CHAPTER_PAUSES, setChapterPause, setContinueChapters, setReadTitles,
   useChapterPause, useContinueChapters, useReadTitles, useVolumeBoost,
 } from '../hooks/usePreferences'
+import { t } from '../locales'
 
 export function ListeningSettings() {
   const player = useAudioPlayer()
 
   return (
     <div className="bg-surface rounded-xl border border-border p-5 md:p-6">
-      <h2 className="text-lg font-semibold mb-4">Listening</h2>
+      <h2 className="text-lg font-semibold mb-4">{t('listening.title')}</h2>
       <div className="space-y-4">
         <div>
-          <label htmlFor="speed" className="block text-sm text-text-muted mb-2">Speed</label>
+          <label htmlFor="speed" className="block text-sm text-text-muted mb-2">{t('listening.speed')}</label>
           <select
             id="speed"
             value={player.rate}
             onChange={e => player.setRate(Number(e.target.value))}
             className="bg-page text-text text-base md:text-sm rounded-lg px-3 py-2 border border-border w-full max-w-xs"
           >
-            {RATES.map(r => <option key={r} value={r}>{r}x</option>)}
+            {RATES.map(r => <option key={r} value={r}>{t('player.rate', { rate: r })}</option>)}
           </select>
         </div>
         <ListeningOptions />
@@ -40,14 +41,14 @@ export function ListeningOptions() {
   return (
     <div className="space-y-4">
       <Toggle
-        label="Read chapter titles"
-        hint="Hear each chapter's title before it starts."
+        label={t('listening.readTitles')}
+        hint={t('listening.readTitlesHint')}
         checked={useReadTitles()}
         onChange={setReadTitles}
       />
       <div>
-        <div id={pauseLabel} className="text-sm text-text">Pause between chapters</div>
-        <p className="text-xs text-text-dim mb-2">A moment of quiet before the next chapter starts.</p>
+        <div id={pauseLabel} className="text-sm text-text">{t('listening.pause')}</div>
+        <p className="text-xs text-text-dim mb-2">{t('listening.pauseHint')}</p>
         <div role="group" aria-labelledby={pauseLabel} className="flex flex-wrap gap-2">
           {CHAPTER_PAUSES.map(s => (
             <button
@@ -58,21 +59,21 @@ export function ListeningOptions() {
                 pause === s ? 'bg-accent text-btn-text font-semibold' : 'bg-surface-hover text-text-muted hover:text-text'
               }`}
             >
-              {s === 0 ? 'Off' : `${s} s`}
+              {s === 0 ? t('listening.pauseOff') : t('listening.pauseSeconds', { s })}
             </button>
           ))}
         </div>
       </div>
       <Toggle
-        label="Continue to the next chapter"
-        hint="When off, playback stops at the end of each chapter."
+        label={t('listening.continue')}
+        hint={t('listening.continueHint')}
         checked={useContinueChapters()}
         onChange={setContinueChapters}
       />
       {canBoostVolume && (
         <Toggle
-          label="Volume boost"
-          hint="Louder playback for quiet recordings and small speakers."
+          label={t('listening.boost')}
+          hint={t('listening.boostHint')}
           checked={boost}
           onChange={player.setVolumeBoost}
         />

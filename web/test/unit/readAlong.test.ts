@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { readFileSync } from 'node:fs'
 import {
-  loadTimings, positionFromTimings, sentenceRanges, timeAtChar, timeForChar,
+  loadTimings, positionFromTimings, sentenceRanges, timeAtChar, timeForChar, wordWeight,
   type CharRange, type TimingSegment,
 } from '../../src/hooks/readAlong'
 import { loadPreparedManifest } from '../../src/hooks/preparedAudio'
@@ -43,6 +43,35 @@ describe('sentenceRanges', () => {
     expect(sentenceRanges('One. Two!\nThree')).toEqual([[0, 4], [5, 9], [10, 15]])
     expect(sentenceRanges('no stop here')).toEqual([[0, 12]])
     expect(sentenceRanges('')).toEqual([])
+  })
+
+  it('keeps a lowercase continuation in the sentence, as the narration pipeline does', () => {
+    const quoted = '‘I wish I hadn’t cried so much!’ said Alice. Then she swam.'
+    expect(sentenceRanges(quoted).map(r => quoted.slice(...r))).toEqual(['‘I wish I hadn’t cried so much!’ said Alice.', 'Then she swam.'])
+  })
+
+  it('splits Spanish: ¿ and ¡ open sentences, a dash opens dialogue and its tag, « » quote (books#54)', () => {
+    const es = '—¿Qué hora es? —preguntó el cura—. ¡Vamos! «Ya voy.» Esperó… y salió.\n—Bien.'
+    expect(sentenceRanges(es).map(r => es.slice(...r))).toEqual([
+      '—¿Qué hora es? —preguntó el cura—.', '¡Vamos!', '«Ya voy.»', 'Esperó… y salió.', '—Bien.',
+    ])
+    expect(sentenceRanges('--¿Venta es ésta? --replicó don Quijote.')).toHaveLength(1)
+  })
+})
+
+describe('wordWeight', () => {
+  it('counts vowel groups, accented vowels included (books#54)', () => {
+    expect(['cat', 'beautiful', 'rhythm'].map(wordWeight)).toEqual([1, 3, 1])
+    // canción, después, pingüino, corazón, não, você
+    expect(['canción', 'después', 'pingüino', 'corazón', 'não', 'você'].map(wordWeight)).toEqual([2, 2, 3, 3, 1, 2])
+  })
+
+  it('makes a stressed í or ú beside another vowel a syllable of its own', () => {
+    expect(['día', 'oído', 'país', 'baúl', 'ciudad'].map(wordWeight)).toEqual([2, 3, 2, 2, 2])
+  })
+
+  it('adds a beat after a comma or dash, after closing quotes too', () => {
+    expect(['así,', 'dijo—', 'casa»,'].map(wordWeight)).toEqual([3, 3, 3])
   })
 })
 
