@@ -600,6 +600,7 @@ def main():
                 changed.append(slug)
                 print(f"{slug}: DIFFERS\n" + "".join(f"    {d}\n" for d in diff), end="", flush=True)
             continue
+        os.makedirs(OUT_DIR, exist_ok=True)  # a new edition has no texts/ yet (git keeps no empty folder)
         with open(os.path.join(OUT_DIR, f"{slug}.json"), "w", encoding="utf-8") as f:
             json.dump({"chapters": chapters, **({"narrationRevision": CATALOG[slug]['narration_revision']} if CATALOG[slug].get('narration_revision') else {})}, f, ensure_ascii=False, separators=(",", ":"))
         print(f"{slug}: {len(chapters)} chapters, {sum(len(c['content']) for c in chapters):,} chars", flush=True)
