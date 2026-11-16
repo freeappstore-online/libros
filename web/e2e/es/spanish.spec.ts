@@ -59,6 +59,10 @@ test('an edition in Spanish shows no English, and axe finds nothing', async ({ p
   const hf = await stubHuggingFace(context, baseURL!)
   const check = async (where: string, { axe = true } = {}) => {
     await page.waitForLoadState('networkidle')
+    // Colour transitions (a toggle just pressed) end first, or axe measures a colour halfway
+    // through; the endless ones (the playing dot's pulse) never end and don't change contrast
+    await page.evaluate(() => Promise.all(document.getAnimations()
+      .filter(a => a.effect?.getComputedTiming().endTime !== Infinity).map(a => a.finished.catch(() => {}))))
     expect(await english(page), where).toEqual([])
     if (axe) expect(await axeViolations(page), where).toEqual([])
   }
