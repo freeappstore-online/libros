@@ -108,7 +108,7 @@ export function CatalogPage() {
               data-shortcut="search"
               className="w-full md:flex-1 md:min-w-64 bg-surface border border-border rounded-lg px-4 py-3 text-text placeholder-text-dim focus:border-accent transition"
             />
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <select
                 value={genre}
                 onChange={e => setGenre(e.target.value)}

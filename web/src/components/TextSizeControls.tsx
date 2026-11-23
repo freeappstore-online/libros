@@ -37,7 +37,7 @@ function SizeRow({ label, smaller, larger, hint, value, unit, range, onChange }:
           type="range" min={range.min} max={range.max} step={range.step} value={value}
           onChange={e => onChange(Number(e.target.value))}
           aria-label={label}
-          className="flex-1 accent-accent"
+          className="flex-1 min-w-0 h-10 accent-accent"
         />
         <button className={btn} onClick={() => onChange(value + range.step)} disabled={value >= range.max}
           aria-label={larger}><span className="text-lg leading-none">A</span></button>

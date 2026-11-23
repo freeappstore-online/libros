@@ -29,7 +29,7 @@ export function NavBar({ title, subtitle, actions }: Props) {
         {/* Only a title may shrink (it truncates): without one the logo would slide under the Offline badge */}
         <div className={`flex flex-1 items-center gap-3 md:gap-5 ${showTitle ? 'min-w-0' : 'min-w-fit'}`}>
           {/* Logo — always visible, always links home */}
-          <Link to="/" aria-current={isHome ? 'page' : undefined} className="text-lg md:text-xl font-display hover:text-accent transition shrink-0">
+          <Link to="/" aria-current={isHome ? 'page' : undefined} className="min-h-10 inline-flex items-center text-lg md:text-xl font-display hover:text-accent transition shrink-0">
             {EDITION.name}
           </Link>
 

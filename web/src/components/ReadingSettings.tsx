@@ -21,7 +21,7 @@ export function ReadingSettings({ currentTheme, setCurrentTheme }: ReadingSettin
                 key={theme}
                 onClick={() => { setCurrentTheme(theme); setTheme(theme) }}
                 aria-pressed={currentTheme === theme}
-                className={`px-4 py-2 rounded-lg text-sm transition ${
+                className={`min-h-10 px-4 py-2 rounded-lg text-sm transition ${
                   currentTheme === theme
                     ? 'bg-accent text-btn-text font-semibold'
                     : 'bg-surface-hover text-text-muted hover:text-text'

@@ -406,8 +406,9 @@ export function ReaderPage() {
       {/* Stays on screen while reading, so bookmarking, search and the chapter list are always at hand */}
       {/* Below lg the header has two rows: only the actions row stays, so phones keep their reading
           area; the negative top is the first row's height less the row gap (rem, so it follows the interface size).
-          Below the status bar/notch in the installed iPhone app. */}
-      <div data-reader-top="" className="sticky top-[calc(env(safe-area-inset-top)-3.125rem)] md:top-[calc(env(safe-area-inset-top)-3.25rem)] lg:top-[env(safe-area-inset-top)] z-30 bg-page">
+          Below the status bar/notch in the installed iPhone app.
+          A phone on its side is too short for a bar that stays: there it scrolls away with the page. */}
+      <div data-reader-top="" className="sticky [@media(max-height:500px)]:static top-[calc(env(safe-area-inset-top)-3.125rem)] md:top-[calc(env(safe-area-inset-top)-3.25rem)] lg:top-[env(safe-area-inset-top)] z-30 bg-page">
         <NavBar
           title={catalogBook.title}
           subtitle={catalogBook.author ? `${catalogBook.author} · ${LOCALE.genre(catalogBook.genre)}` : LOCALE.genre(catalogBook.genre)}
@@ -437,7 +438,7 @@ export function ReaderPage() {
               aria-expanded={sidebarOpen}
               aria-controls="chapter-drawer"
               aria-label={t('reader.chaptersButton', { chapter: visibleChapterIdx + 1, chapters: chapters.length })}
-              className="md:hidden min-h-10 px-3 py-1.5 rounded-lg text-xs text-text-muted border border-border"
+              className="md:hidden min-h-10 px-2 sm:px-3 py-1.5 rounded-lg text-xs text-text-muted border border-border"
             >
               {t('chapter.short', { chapter: visibleChapterIdx + 1, chapters: chapters.length })}
             </button>
@@ -510,19 +511,19 @@ export function ReaderPage() {
                   onClick={addBookmark}
                   disabled={excerpt}
                   title={excerpt ? t('notes.notInExcerpt') : undefined}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-semibold bg-accent hover:bg-accent-hover text-btn-text transition disabled:opacity-40"
+                  className="inline-flex items-center gap-1.5 min-h-10 px-3 py-1.5 rounded-lg text-sm font-semibold bg-accent hover:bg-accent-hover text-btn-text transition disabled:opacity-40"
                 >
                   <BookmarkIcon size={14} /> {t('notes.bookmarkHere')}
                 </button>
                 {annotations.length > 0 && (
                   <button
                     onClick={() => downloadMarkdown(`${slug}-notes.md`, annotationsMarkdown(catalogBook.title, catalogBook.author, chapters.map(c => c.title), annotations))}
-                    className="px-3 py-1.5 rounded-lg text-sm border border-border text-text-muted hover:text-text transition"
+                    className="min-h-10 px-3 py-1.5 rounded-lg text-sm border border-border text-text-muted hover:text-text transition"
                   >
                     {t('notes.export')}
                   </button>
                 )}
-                <button onClick={() => setNotesOpen(false)} aria-label={t('notes.close')} className="ml-auto px-2.5 py-1.5 rounded-lg text-sm border border-border text-text-muted hover:text-text transition">&times;</button>
+                <button onClick={() => setNotesOpen(false)} aria-label={t('notes.close')} className="ml-auto min-h-10 min-w-10 px-2.5 py-1.5 rounded-lg text-sm border border-border text-text-muted hover:text-text transition">&times;</button>
               </div>
               {annotations.length === 0 ? (
                 <p className="mt-3 text-sm text-text-muted">
@@ -623,7 +624,7 @@ export function ReaderPage() {
                 {visibleChapterIdx > 0 ? (
                   <button
                     onClick={() => selectChapter(chapters[visibleChapterIdx - 1].id)}
-                    className="text-text-muted hover:text-text transition text-sm max-w-[45%] truncate"
+                    className="min-h-10 text-text-muted hover:text-text transition text-sm max-w-[45%] truncate"
                   >
                     &larr; {chapters[visibleChapterIdx - 1].title}
                   </button>
@@ -631,7 +632,7 @@ export function ReaderPage() {
                 {visibleChapterIdx < chapters.length - 1 ? (
                   <button
                     onClick={() => selectChapter(chapters[visibleChapterIdx + 1].id)}
-                    className="text-text-muted hover:text-text transition text-sm max-w-[45%] truncate text-right"
+                    className="min-h-10 text-text-muted hover:text-text transition text-sm max-w-[45%] truncate text-right"
                   >
                     {chapters[visibleChapterIdx + 1].title} &rarr;
                   </button>

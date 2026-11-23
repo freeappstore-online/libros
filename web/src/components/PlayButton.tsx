@@ -21,7 +21,7 @@ export function PlayButton({ book, chapterIdx }: { book: AudioBook; chapterIdx: 
       onClick={() => (isPlaying ? player.pause() : player.loadAndPlay(book, chapterIdx))}
       data-shortcut="play"
       aria-keyshortcuts="Space K"
-      className="min-h-10 px-4 py-1.5 rounded-lg font-semibold text-sm bg-accent hover:bg-accent-hover text-btn-text transition"
+      className="min-h-10 px-3 sm:px-4 py-1.5 rounded-lg font-semibold text-sm bg-accent hover:bg-accent-hover text-btn-text transition"
     >
       {t(isPlaying ? 'player.pause' : 'player.play')}
     </button>

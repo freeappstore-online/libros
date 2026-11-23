@@ -74,13 +74,13 @@ export function AudioPlayer() {
       {expanded && (
         <div id="player-panel" className="border-b border-border px-4 py-3 max-w-4xl mx-auto max-h-64 overflow-y-auto">
           {/* Tabs */}
-          <div className="flex gap-4 mb-3 border-b border-border">
+          <div className="flex flex-wrap gap-x-4 mb-3 border-b border-border">
             {(['chapters', 'history', 'settings'] as const).map(name => (
               <button
                 key={name}
                 onClick={() => setTab(name)}
                 aria-pressed={tab === name}
-                className={`py-2 text-xs font-semibold uppercase tracking-wider transition ${
+                className={`min-h-10 py-2 text-xs font-semibold uppercase tracking-wider transition ${
                   tab === name ? 'text-accent' : 'text-text-dim hover:text-text-muted'
                 }`}
               >

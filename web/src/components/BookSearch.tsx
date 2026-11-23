@@ -47,7 +47,7 @@ export function BookSearch({ chapters, onJump, onClose }: Props) {
         ? t('search.position', { current: current + 1, total: hits.length })
         : t('search.summary', { matches: t('search.matches', { count: hits.length }), chapters: t('search.chapters', { count: chapterCount }) })
 
-  const btn = 'px-2.5 py-1.5 rounded-lg text-sm border border-border text-text-muted hover:text-text disabled:opacity-40 transition'
+  const btn = 'min-h-10 min-w-10 px-2.5 py-1.5 rounded-lg text-sm border border-border text-text-muted hover:text-text disabled:opacity-40 transition'
 
   return (
     <div role="search" className="border-b border-border bg-surface">
@@ -67,7 +67,7 @@ export function BookSearch({ chapters, onJump, onClose }: Props) {
             }}
             placeholder={t('search.label')}
             aria-label={t('search.label')}
-            className="min-w-0 flex-1 bg-page border border-border rounded-lg px-3 py-1.5 text-text placeholder-text-dim focus:outline-none focus:border-accent transition"
+            className="min-w-0 min-h-10 flex-1 bg-page border border-border rounded-lg px-3 py-1.5 text-text placeholder-text-dim focus:outline-none focus:border-accent transition"
           />
           <button onClick={() => go(current - 1)} disabled={hits.length === 0} aria-label={t('search.previous')} title={t('search.previous')} className={btn}>&uarr;</button>
           <button onClick={() => go(current + 1)} disabled={hits.length === 0} aria-label={t('search.next')} title={t('search.next')} className={btn}>&darr;</button>

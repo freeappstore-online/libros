@@ -132,6 +132,15 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    /* No double-tap zoom (and no tap delay); pinch zoom stays */
+    touch-action: manipulation;
+  }
+
+  /* A long press on a control shouldn't select its label or open the iOS callout */
+  button, nav a {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
   }
 
   /* Keyboard focus is always visible (books#15) */
@@ -166,5 +175,13 @@
      components/UpdateToast.tsx shows updates instead (books#24). */
   body > aside[aria-label="App installation and updates"] {
     display: none;
+  }
+}
+
+/* iOS zooms the page when a focused field's text is under 16 px. Outside the layers, so it
+   wins over the text-size utilities; px, so a small interface size can't bring it back. */
+@media (pointer: coarse) {
+  input, select, textarea {
+    font-size: max(16px, 1rem);
   }
 }

@@ -100,7 +100,7 @@ export function HighlightToolbar({ rect, onHighlight }: { rect: DOMRect; onHighl
           onClick={() => onHighlight(c, false)}
           aria-label={t('notes.highlightIn', { color: colorName(c) })}
           title={t('notes.highlightIn', { color: colorName(c) })}
-          className={`w-9 h-9 rounded-full border border-border ${HIGHLIGHT_COLORS[c].className}`}
+          className={`w-10 h-10 rounded-full border border-border ${HIGHLIGHT_COLORS[c].className}`}
         />
       ))}
       <button onClick={() => onHighlight('yellow', true)} className="ml-auto min-h-10 px-2 text-sm font-semibold text-accent hover:text-accent-hover transition">
@@ -141,7 +141,7 @@ export function AnnotationEditor({ slug, annotation, onClose }: { slug: string; 
                 aria-checked={color === c}
                 aria-label={t(`color.${c}`)}
                 onClick={() => setColor(c)}
-                className={`w-7 h-7 rounded-full border-2 ${HIGHLIGHT_COLORS[c].className} ${color === c ? 'border-text' : 'border-transparent'}`}
+                className={`w-10 h-10 rounded-full border-2 ${HIGHLIGHT_COLORS[c].className} ${color === c ? 'border-text' : 'border-transparent'}`}
               />
             ))}
           </div>
@@ -158,13 +158,13 @@ export function AnnotationEditor({ slug, annotation, onClose }: { slug: string; 
         <div className="mt-3 flex items-center justify-between gap-3">
           <button
             onClick={() => { if (deleteAnnotation(slug, annotation)) onClose() }}
-            className="text-sm text-text-muted hover:text-danger transition"
+            className="min-h-10 text-sm text-text-muted hover:text-danger transition"
           >
             {t('notes.delete')}
           </button>
           <div className="flex gap-2">
-            <button onClick={onClose} className="px-3 py-1.5 rounded-lg text-sm border border-border text-text-muted hover:text-text transition">{t('common.cancel')}</button>
-            <button onClick={save} className="px-3 py-1.5 rounded-lg text-sm font-semibold bg-accent hover:bg-accent-hover text-btn-text transition">{t('common.save')}</button>
+            <button onClick={onClose} className="min-h-10 px-3 py-1.5 rounded-lg text-sm border border-border text-text-muted hover:text-text transition">{t('common.cancel')}</button>
+            <button onClick={save} className="min-h-10 px-3 py-1.5 rounded-lg text-sm font-semibold bg-accent hover:bg-accent-hover text-btn-text transition">{t('common.save')}</button>
           </div>
         </div>
       </div>
